@@ -5,42 +5,22 @@
  *
  * Purpose:
  *
- * This program is modified code based on the Designers Guide to the Cortex-M
- * Family CMSIS-RTOS examples. It implements a PWM signal generator and a
- * Sawtooth waveform generator using CMSIS-RTOS threads on the STM32F103RB.
+ * This program 
  *
  * Description:
  *
- * CMSIS-RTOS PWM and Sawtooth Signal Generator for STM32F103RB.
- * This application uses three RTOS threads to handle UART input, PWM control,
- * and Sawtooth waveform generation. UART interrupts capture user commands and
- * signal an input handler thread, which then sends messages to the correct
- * control thread to adjust the Duty cycle of the PWM or modify the amplitude
- * of the sawtooth waveform. 
+ * CMSIS-RTOS for STM32F103RB.
+ * This application uses three RTOS threads to handle UART input
  *
  *  Details:
  * - Input Handler Thread : Waits for UART interrupt and routes the traffic to
  *                          the appropriate Queue, ignoring invalid input.
- * - PWM Thread           : Modifies the PWM duty cycle using 'D' and 'd'.
- * - Sawtooth Thread      : Generates a Sawtooth waveform with 10 ms sample time,
- *                          amplitude adjusted with 'A' or 'a'.
- *
  * *UART Commands:
  *
- * - 'D' : Increases PWM duty cycle by 10%.
- * - 'd' : Decreases PWM duty cycle by 10%.
- * - 'A' : Increases Sawtooth amplitude by 100.
- * - 'a' : Decreases Sawtooth amplitude by 100.
- * - all other input - ignored.
- *
- * *Signal Behavior:
- *
- * - PWM signal is generated using LED on/off timing.
- * - Sawtooth signal increments by 10 every 10 ms.
- * - Sawtooth resets to 0 when it reaches the current amplitude.
+ * - 'Enter' Allocates the store data of the buffer into the mail queue
  *
  * *Sequence Flow:
- * [USART1 IRQ] -> Input Handler Thread -> PWM Thread / Sawtooth Thread
+ * [USART1 IRQ] -> 
  *
  * *Board:
  * STM32F103RB Development Board
@@ -53,41 +33,56 @@
 #include "uart.h"
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
-//setup and define message queues
-osMessageQId Q_PWM;         
-osMessageQId Q_Sawtooth;    
+//Size message limits for message mail 
+#define MAX_MAIL_PAYLOAD 32
+#define LOCAL_BUF_SIZE 128 // A large temporary buffer to hold input until 'Enter' is pressed
+#define CHUNK_SIZE     (MAX_MAIL_PAYLOAD - 1) // 31 characters + 1 for '\0'
 
-osMessageQDef (Q_PWM,0x16,unsigned char);
-osMessageQDef (Q_Sawtooth, 0x16, unsigned char);
+/* ANSI Color Escape Codes
+ * NOTE: The Keil uVision simulator UART window does NOT render ANSI escape
+ * codes (they show up as stray characters and corrupt the output). They are
+ * disabled (empty) for simulator testing. Re-enable the real codes below when
+ * driving a true ANSI terminal (Tera Term / PuTTY) in the dual-UART phase. */
+#define CLR_RESET   ""  // "\033[0m"
+#define CLR_TX      ""  // "\033[1;32m" Bold Green for Transmitted messages
+#define CLR_RX      ""  // "\033[1;36m" Bold Cyan for Received messages
+#define CLR_SYSTEM  ""  // "\033[1;31m" Bold Red for system alerts/errors
+
+
+//This structu is for mail box and message handler 
+typedef struct {
+    char payload[MAX_MAIL_PAYLOAD];
+    uint8_t is_fragmented; // 0 = Normal, 1 = Part of a split message
+    uint8_t source_uart; // 1 or 2, so the Tx thread knows where it came from
+} mail_t;
+
+
+
+//Setup for Mail Queue 
+osMailQDef(mail_queue, 10, mail_t); // Define a mail queue of 10 blocks
 
 //osEvents
-osEvent  PWM_result;
-osEvent  SawTooth_result;
-
 
 //Setup and define threads and priority levels
 void InputHandler_Thread (void const *argument);
-void PWM_Thread (void const *argument);
-void Sawtooth_Thread (void const *argument);
-
-osThreadDef(InputHandler_Thread, osPriorityAboveNormal, 1, 0);
-osThreadDef(PWM_Thread, osPriorityNormal, 1, 0);
-osThreadDef(Sawtooth_Thread, osPriorityNormal, 1, 0);
+void MailOutput_Thread (void const *argument);
+// Thread definitions 
+osThreadDef(InputHandler_Thread, osPriorityAboveNormal, 1, 0); // stack from OS_STKSIZE (raised in RTX_Conf_CM.c)
+osThreadDef(MailOutput_Thread, osPriorityNormal, 1, 0);
 
 //Thread IDs
-osThreadId T_PWM;
-osThreadId T_SawTooth;
 osThreadId T_main;
 osThreadId T_Handler;
+osThreadId T_Mail;
+
+// Mail Q Id
+osMailQId  mail_queue_id;
 
 //Variable declarations
-volatile uint32_t Duty_Cycle_H = 500;
-volatile uint32_t Duty_Cycle_L = 500;
 volatile uint8_t Text_Buffer[64];
 volatile uint8_t  intKey;
-volatile int16_t  amplitude = 100;
-volatile uint16_t  Sawtooth_out = 0;
 
 //function prototype
 void SendText(uint8_t *txt);
@@ -101,168 +96,137 @@ osMutexDef(uart_mutex);
  *
  * Description: This thread has a "higher than normal" priority, allowing
  *              It to execute anytime there is user input to UART #1. It will
- *              update the appropriate message queue for the PWM or SawTooth
- *							thread with valid input ('A', 'a', 'D', 'd'). Any other input
- *							will not impact tasking or thread operation.
+ *              update the appropriate message queue 
  *---------------------------------------------------------------------------*/
 void InputHandler_Thread (void const *argument) 
 {
+	char local_buffer[LOCAL_BUF_SIZE];
+	uint16_t index = 0;
+	uint16_t i;
+	
 	for (;;) 
 	{
+		// Wait for the interrupt handler to signal a new character in intKey
 		osSignalWait (0x01,osWaitForever);
-
-		//check for valid input and update queues accordingly	
-		if((intKey == 'A') || (intKey == 'a'))
-	    {
-	      osMessagePut(Q_Sawtooth,intKey, 0);
-	    }
-	  else if((intKey == 'D') || (intKey == 'd'))
-	    {
-		    osMessagePut(Q_PWM,intKey, 0);
-	    }	
-    //if invalid input, no action performed
-	}
-
-}
-
-/*----------------------------------------------------------------------------
- * PWM_Thread:
- * 
- * Description: This thread is responsible for the PWM output by toggling an
- *              LED high and low depending on the duty cycle, and changing the
- *              Duty cycle based on user input - incrementing or decrementing
- *              by 10% clamping to percentage high/low bounds when needed. 
- *---------------------------------------------------------------------------*/
-void PWM_Thread (void const *argument) 
-{
-	//local float variable for output to UART window
-	float PWM_OutputUART;
-
-	for (;;) 
-	{
-	  //check message queue
-	  PWM_result = osMessageGet(Q_PWM, 0);
+		char ch = (char)intKey;
 		
-		//if there is a new message:
-		if(PWM_result.status == osEventMessage)
-		  {
-		    //see if the input requires action and ensure clamping 
-        //to range, increment or decrement as appropriate.				
-		    if((PWM_result.value.v == 'D') && (Duty_Cycle_H != 1000))
-		      {
-			      Duty_Cycle_H = (Duty_Cycle_H + 100);
-			      Duty_Cycle_L = 1000 - Duty_Cycle_H;
-						
-			      //calculate and format float value for UART output
-			      PWM_OutputUART = Duty_Cycle_H/1000.00f;
-			      
-						//use sprintf function to put in format to be sent
-						//through the SendText function.
-			      sprintf(Text_Buffer, "PWM Thread - increased duty cycle to %0.2f \r\n", PWM_OutputUART);
-			
-						//use mutex to ensure reliable transmission of data to UART window
-		        osMutexWait(uart_mutex, osWaitForever);
-		
-		        SendText(Text_Buffer);
-		
-		        osMutexRelease(uart_mutex);			
-      
-          }				 
-		    else if((PWM_result.value.v == 'd') && (Duty_Cycle_H != 0))
-		      {
-		        Duty_Cycle_H = (Duty_Cycle_H - 100);
-			      Duty_Cycle_L = (1000 - Duty_Cycle_H);
-
-			      PWM_OutputUART = Duty_Cycle_H/1000.00f;
-			
-			      sprintf(Text_Buffer, "PWM Thread - decreased duty cycle to %0.2f \r\n", PWM_OutputUART);
-			
-		        osMutexWait(uart_mutex, osWaitForever);
-		
-		        SendText(Text_Buffer);
-		
-		        osMutexRelease(uart_mutex);		
-		      }
- 	      }
-			/* Toggle output waveform according to duty cycle -
-		     if Duty cycle is 100%, keep LED output HIGH,
-			   if Duty cycle is 0%, keep LED output LOW,
-				 otherwise, toggle according to duty cycle  */
-		  if(Duty_Cycle_H == 1000)
-			{ LED_On(0);
-			  osDelay(10);}
-		  else if(Duty_Cycle_L == 1000)
-			{ LED_Off(0);
-			  osDelay(10);}
-		  else
-		    {
-		      LED_On(0);
-		      osDelay(Duty_Cycle_H);
-		      LED_Off(0);
-	        osDelay(Duty_Cycle_L);
-		    }
-	  }
-
-}
-
-/*----------------------------------------------------------------------------
- * Sawtooth_Thread:
- * 
- * Description: This thread is responsible for generating a sawtooth waveform
- *              it receives information on user input via the message queue
- *              and updates the amplitude of the sawtooth waveform accordingly.
- *              initially, the sawtooth waveform will have an amplitude of 100,
- *              depending on user input, it can be varied from 0 to 1000 by 
- *              increments of 100.
- * 
- *---------------------------------------------------------------------------*/
-void Sawtooth_Thread (void const *argument) 
-{
-	for (;;) 
-	{
-		//Increment the Sawtooth by 10 each time task runs
-		Sawtooth_out = Sawtooth_out+10; 
-		//reset to 0 when max is reached
-		if(Sawtooth_out >= amplitude)
-		{
-		  Sawtooth_out = 0;
+		// 1. Echo the character back to the local terminal using SendChar.
+		//    On Enter, emit a full CR+LF so the cursor drops to a fresh line
+		//    instead of overwriting what the user just typed.
+		osMutexWait(uart_mutex, osWaitForever);
+		if (ch == '\r' || ch == '\n') {
+			SendChar('\r');
+			SendChar('\n');
+		} else {
+			SendChar(ch);
 		}
-		//check message queue
-		SawTooth_result = osMessageGet(Q_Sawtooth, 0);
+		osMutexRelease(uart_mutex);
 		
-		if(SawTooth_result.status == osEventMessage)
-		  {
-			
-		    if((SawTooth_result.value.v == 'A') && (amplitude != 1000))
-		      {
-			      amplitude += 100;
+		// 2. Check for End of Message (User pressed Enter / Carriage Return)
+		if (intKey == '\r' || intKey == '\n'){
+			local_buffer[index] = '\0'; // we force a Null to terminate the string
+		
+			if (index > 0){ // Only send if the user actually typed something
+				uint16_t remaining_bytes = index;
+				uint16_t buffer_ptr = 0;
+				// set a flag if the message is bigger than 32 characters 
+				uint8_t fragmented_flag = (remaining_bytes > CHUNK_SIZE) ? 1 : 0;
 				
-			      sprintf(Text_Buffer, "SawTooth Thread - increased Amplitude to %d \r\n", amplitude);
+				// Alert the user on their local screen that fragmentation is happening
+				if (fragmented_flag){
+					osMutexWait(uart_mutex, osWaitForever);
+					SendText((uint8_t *)(CLR_SYSTEM "\r\n[System: Message too long. Segmenting into packets...]\r\n" CLR_RESET));
+					osMutexRelease(uart_mutex);
+				}
+					
+				// --- FRAGMENTATION LOOP ---
+				while (remaining_bytes > 0){ /// once we reach the limit of 32 bytes we allocate the message on the mail. 
+					// Allocate RTX Mail, populate it with data and send it 
+					mail_t *mail;
+					mail = (mail_t*)osMailAlloc(mail_queue_id, osWaitForever);
+					if (mail == NULL){
+						// Alloc failed: bail out so we never spin forever and starve MailOutput
+						break;
+					}
+					{
+						//  allocates a mail slot and fill it with data
+						mail->source_uart = 1; // Originating from UART1
+						mail->is_fragmented = fragmented_flag;
+						
+						// Calculate how many characters fit in this specific mail slice
+						uint16_t bytes_to_copy = (remaining_bytes > CHUNK_SIZE) ? CHUNK_SIZE : remaining_bytes;
+						//Fragmentate the message 
+						for (i = 0; i < bytes_to_copy; i++){
+							mail->payload[i] = local_buffer[buffer_ptr + i];
+						}
+						
+						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination              
+						// Ship it to the Mail Queue
+						osMailPut(mail_queue_id, mail);
+						// Shift tracking pointers forward
+						buffer_ptr += bytes_to_copy;
+						remaining_bytes -= bytes_to_copy;
+					}
+				}
+			}
 			
-		        osMutexWait(uart_mutex, osWaitForever);
-		
-		        SendText(Text_Buffer);
-		
-		        osMutexRelease(uart_mutex);			
-		        }
-		    else if((SawTooth_result.value.v == 'a') && (amplitude != 0))
-		      {
-            amplitude -= 100;		
-				
-			      sprintf(Text_Buffer, "SawTooth Thread - decreased Amplitude to %d \r\n", amplitude);
-			
-		        osMutexWait(uart_mutex, osWaitForever);
-		
-		        SendText(Text_Buffer);
-		
-		        osMutexRelease(uart_mutex);	
-
-		      }
- 	    }
-		
-    osDelay(10);
+			index = 0; // Clear index tracking for the next fresh message
+			} 
+		else{
+			// 3. Accumulate normal typing into buffer safely avoiding memory overflow
+			if (index < LOCAL_BUF_SIZE - 1) {
+					local_buffer[index++] = ch;
+			}
+		}
 	}
 }
+
+/*----------------------------------------------------------------------------
+ * MailOutput_Thread:
+ *
+ * Description: Monitored mail queue output. Receives chunks, applies text 
+ * color formats, and outputs them to the respective destination.
+ *---------------------------------------------------------------------------*/
+void MailOutput_Thread (void const *argument) 
+{
+    for (;;) 
+    {
+        // Block until mail arrives from the queue
+        osEvent evt = osMailGet(mail_queue_id, osWaitForever);
+        
+        if (evt.status == osEventMail) 
+        {
+            mail_t *mail = (mail_t*)evt.value.p;
+            
+            osMutexWait(uart_mutex, osWaitForever);
+            
+            // Set the incoming text color to Cyan for clear tracking
+            //SendText((uint8_t *)CLR_RX);
+            
+            // Print out the payload piece
+            SendText((uint8_t *)mail->payload);
+            
+            if (mail->is_fragmented == 0) 
+            {
+                // This was a complete, standard message
+                // Append newline and reset formatting colors
+                SendText((uint8_t *)("\r\n" CLR_RESET));
+            }
+            else 
+            {
+                // If it's a fragment, we intentionally skip printing "\r\n" 
+                // so the next fragment appends right next to it!
+                SendText((uint8_t *)CLR_RESET);
+            }
+            
+            osMutexRelease(uart_mutex);
+            
+            // Recycle the mail memory block back to RTX Pool
+            osMailFree(mail_queue_id, mail);
+        }
+    }
+}
+
 
 /*----------------------------------------------------------------------------
   Main: Initialize and start RTX Kernel
@@ -280,27 +244,24 @@ int main (void)
   NVIC->ISER[USART1_IRQn/32] = 1UL << (USART1_IRQn%32); //set interrupt enable bit  
   USART1->CR1 |= USART_CR1_RXNEIE; //enable USART receiver not empty interrupt 
 	
-	LED_Initialize ();
+	//LED_Initialize ();
 	
 	//create the message queues
-	Q_PWM = osMessageCreate(osMessageQ(Q_PWM),NULL);					
-	Q_Sawtooth = osMessageCreate(osMessageQ(Q_Sawtooth),NULL);
 	
 	//create mutex object
   uart_mutex = osMutexCreate(osMutex(uart_mutex));
+	// Create mail queue in thread 
+	mail_queue_id = osMailCreate(osMailQ(mail_queue), NULL);
 	
 	//Create Threads
 	T_Handler = osThreadCreate(osThread(InputHandler_Thread), NULL);
-	T_PWM = osThreadCreate(osThread(PWM_Thread), NULL);
-	T_SawTooth =	osThreadCreate(osThread(Sawtooth_Thread), NULL);
-	
+	T_Mail = osThreadCreate(osThread(MailOutput_Thread), NULL);
 	osKernelStart ();                         						// start thread execution 
 	
 	//terminate the main thread to free up resources
 	T_main = osThreadGetId (); 
   osThreadTerminate(T_main);
 }
-
 
 /*----------------------------------------------------------------------------
 USART1_IRQHandler: This is the IRQ handler for UART #1 input.

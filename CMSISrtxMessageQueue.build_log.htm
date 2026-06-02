@@ -8,7 +8,7 @@ Copyright (C) 2025 ARM Ltd and ARM Germany GmbH. All rights reserved.
 License Information: Pablo Moreno
 Kettering
 User-based license: Keil MDK Community (non-commercial free of charge)
-Valid until: May 31 2033. Cached until: Jun 4 2026
+Valid until: May 31 2033. Cached until: Jun 5 2026
  
 Tool Versions:
 Toolchain:       Keil MDK Community (non-commercial free of charge  Version: 5.43.0.0
@@ -24,21 +24,12 @@ Target DLL:      UL2CM3.DLL V1.164.16.0
 Dialog DLL:      TCM.DLL V1.56.6.0
  
 <h2>Project:</h2>
-C:\Users\pablo\Documentos\KETTERING\2026\Spring term\ECE_626\Project\CMSISrtxMessageQueue.uvprojx
+C:\Users\pablo\Documentos\KETTERING\2026\Spring term\ECE_626\Project\Dual-UART Text  Messaging Simulation with RTX RTOS\CMSISrtxMessageQueue.uvprojx
 Project File Date:  05/28/2026
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.24', folder: 'C:\Users\pablo\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'Target 1'
-compiling RTX_Conf_CM.c...
-uart.c(1): warning: non-portable path to file '<stm32f10x.h>'; specified path differs in case from file name on disk [-Wnonportable-include-path]
-    1 | #include <stm32F10x.h>
-      |          ^~~~~~~~~~~~~
-      |          <stm32f10x.h>
-1 warning generated.
-compiling uart.c...
-compiling system_stm32f10x.c...
-compiling LED_MCBSTM32E.c...
 main.c(50): warning: non-portable path to file '"stm32f10x.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
    50 | #include "STM32F10x.h"
       |          ^~~~~~~~~~~~~
@@ -50,52 +41,11 @@ C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC\cmsis_
 C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include\cmsis_armclang.h(46): note: previous definition is here
    46 |   #define __NO_RETURN                            __attribute__((__noreturn__))
       |           ^
-main.c(161): warning: implicitly declaring library function 'sprintf' with type 'int (char *__restrict, const char *__restrict, ...)' [-Wimplicit-function-declaration]
-  161 |                               sprintf(Text_Buffer, "PWM Thread - increased duty cycle to %0.2f \r\n", PWM_OutputUART);
-      |                               ^
-main.c(161): note: include the header <stdio.h> or explicitly provide a declaration for 'sprintf'
-main.c(161): warning: passing 'volatile uint8_t[64]' (aka 'volatile unsigned char[64]') to parameter of type 'char *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
-  161 |                               sprintf(Text_Buffer, "PWM Thread - increased duty cycle to %0.2f \r\n", PWM_OutputUART);
-      |                                       ^~~~~~~~~~~
-main.c(166): warning: passing 'volatile uint8_t[64]' (aka 'volatile unsigned char[64]') to parameter of type 'uint8_t *' (aka 'unsigned char *') discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
-  166 |                         SendText(Text_Buffer);
-      |                                  ^~~~~~~~~~~
-main.c(93): note: passing argument to parameter 'txt' here
-   93 | void SendText(uint8_t *txt);
-      |                        ^
-main.c(178): warning: passing 'volatile uint8_t[64]' (aka 'volatile unsigned char[64]') to parameter of type 'char *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
-  178 |                               sprintf(Text_Buffer, "PWM Thread - decreased duty cycle to %0.2f \r\n", PWM_OutputUART);
-      |                                       ^~~~~~~~~~~
-main.c(182): warning: passing 'volatile uint8_t[64]' (aka 'volatile unsigned char[64]') to parameter of type 'uint8_t *' (aka 'unsigned char *') discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
-  182 |                         SendText(Text_Buffer);
-      |                                  ^~~~~~~~~~~
-main.c(93): note: passing argument to parameter 'txt' here
-   93 | void SendText(uint8_t *txt);
-      |                        ^
-main.c(240): warning: passing 'volatile uint8_t[64]' (aka 'volatile unsigned char[64]') to parameter of type 'char *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
-  240 |                               sprintf(Text_Buffer, "SawTooth Thread - increased Amplitude to %d \r\n", amplitude);
-      |                                       ^~~~~~~~~~~
-main.c(244): warning: passing 'volatile uint8_t[64]' (aka 'volatile unsigned char[64]') to parameter of type 'uint8_t *' (aka 'unsigned char *') discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
-  244 |                         SendText(Text_Buffer);
-      |                                  ^~~~~~~~~~~
-main.c(93): note: passing argument to parameter 'txt' here
-   93 | void SendText(uint8_t *txt);
-      |                        ^
-main.c(252): warning: passing 'volatile uint8_t[64]' (aka 'volatile unsigned char[64]') to parameter of type 'char *' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
-  252 |                               sprintf(Text_Buffer, "SawTooth Thread - decreased Amplitude to %d \r\n", amplitude);
-      |                                       ^~~~~~~~~~~
-main.c(256): warning: passing 'volatile uint8_t[64]' (aka 'volatile unsigned char[64]') to parameter of type 'uint8_t *' (aka 'unsigned char *') discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
-  256 |                         SendText(Text_Buffer);
-      |                                  ^~~~~~~~~~~
-main.c(93): note: passing argument to parameter 'txt' here
-   93 | void SendText(uint8_t *txt);
-      |                        ^
-11 warnings generated.
+2 warnings generated.
 compiling main.c...
-compiling GPIO_STM32F10x.c...
 linking...
-Program Size: Code=14436 RO-data=740 RW-data=60 ZI-data=10732  
-".\CMSISrtxMessageQueue.axf" - 0 Error(s), 12 Warning(s).
+Program Size: Code=8588 RO-data=436 RW-data=56 ZI-data=17200  
+".\CMSISrtxMessageQueue.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -137,17 +87,17 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:RTOS:Keil RTX@4.82.0
       Include file:  CMSIS/RTOS/RTX/INC/cmsis_os.h
       Source file:   CMSIS/RTOS/RTX/Templates/RTX_Conf_CM.c
-      Include file:  CMSIS/RTOS/RTX/UserCodeTemplates/osObjects.h
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/main.c
       Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MemPool.c
-      Library file:  CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3.lib
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MailQueue.c
       Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MsgQueue.c
       Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Mutex.c
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/main.c
       Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Semaphore.c
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Timer.c
+      Include file:  CMSIS/RTOS/RTX/UserCodeTemplates/osObjects.h
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MailQueue.c
       Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Thread.c
       Source file:   CMSIS/RTOS/RTX/SRC/ARM/SVC_Table.s
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Timer.c
+      Library file:  CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3.lib
 
    * Component: Board Support:LED(API)@1.0.0
       Include file:  Board/Board_LED.h
@@ -162,10 +112,10 @@ Package Vendor: Keil
       Source file:   RTE_Driver/GPIO_STM32F10x.c
 
    * Component: Keil::Device:Startup@1.0.0
-      Source file:   Device/Source/system_stm32f10x.c
+      Source file:   Device/Source/ARM/startup_stm32f10x_md.s
       Source file:   Device/Source/ARM/STM32F1xx_OPT.s
       Include file:  RTE_Driver/Config/RTE_Device.h
-      Source file:   Device/Source/ARM/startup_stm32f10x_md.s
+      Source file:   Device/Source/system_stm32f10x.c
 Build Time Elapsed:  00:00:00
 </pre>
 </body>
