@@ -45,7 +45,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\</OutputDirectory>
-          <OutputName>CMSISrtxMessageQueue</OutputName>
+          <OutputName>CMSISrtxMailbox</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -410,9 +410,9 @@
               <FilePath>.\led.c</FilePath>
             </File>
             <File>
-              <FileName>main.c</FileName>
+              <FileName>mail.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\main.c</FilePath>
+              <FilePath>.\mail.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,0 +1,172 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.43.1.0
+Copyright (C) 2025 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Pablo Moreno
+Kettering
+User-based license: Keil MDK Community (non-commercial free of charge)
+Valid until: May 31 2033. Cached until: Jun 13 2026
+ 
+Tool Versions:
+Toolchain:       Keil MDK Community (non-commercial free of charge  Version: 5.43.0.0
+Toolchain Path:  C:\Users\pablo\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.24
+Assembler:       Armasm.exe V6.24
+Linker/Locator:  ArmLink.exe V6.24
+Library Manager: ArmAr.exe V6.24
+Hex Converter:   FromElf.exe V6.24
+CPU DLL:         SARMCM3.DLL V5.43.0.0
+Dialog DLL:      DARMSTM.DLL V1.69.1.0
+Target DLL:      UL2CM3.DLL V1.164.16.0
+Dialog DLL:      TCM.DLL V1.56.6.0
+ 
+<h2>Project:</h2>
+C:\Users\pablo\Documentos\KETTERING\2026\Spring term\ECE_626\Project\Dual-UART Text  Messaging Simulation with RTX RTOS\CMSISrtxMailbox.uvprojx
+Project File Date:  06/06/2026
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.24', folder: 'C:\Users\pablo\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
+Build target 'Target 1'
+compiling RTX_Conf_CM.c...
+compiling GPIO_STM32F10x.c...
+uart.c(1): warning: non-portable path to file '<stm32f10x.h>'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+    1 | #include <stm32F10x.h>
+      |          ^~~~~~~~~~~~~
+      |          <stm32f10x.h>
+1 warning generated.
+compiling uart.c...
+compiling LED_MCBSTM32E.c...
+compiling system_stm32f10x.c...
+mail.c(6): warning: non-portable path to file '"stm32f10x.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+    6 | #include "STM32F10x.h"
+      |          ^~~~~~~~~~~~~
+      |          "stm32f10x.h"
+mail.c(7): warning: In file included from...
+C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC\cmsis_os.h(73): warning: '__NO_RETURN' macro redefined [-Wmacro-redefined]
+   73 | #define __NO_RETURN __attribute__((noreturn))
+      |         ^
+C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include\cmsis_armclang.h(46): note: previous definition is here
+   46 |   #define __NO_RETURN                            __attribute__((__noreturn__))
+      |           ^
+mail.c(490): warning: passing 'char[7]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  490 |                                           SendText1("[rec]:");
+      |                                                     ^~~~~~~~
+mail.c(120): note: passing argument to parameter 'txt' here
+  120 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(494): warning: passing 'char[7]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  494 |                                                 SendText2("[rec]:");
+      |                                                           ^~~~~~~~
+mail.c(121): note: passing argument to parameter 'txt' here
+  121 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(498): warning: passing 'char[7]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  498 |                                                 SendText3("[rec]:");
+      |                                                           ^~~~~~~~
+mail.c(122): note: passing argument to parameter 'txt' here
+  122 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(618): warning: implicitly declaring library function 'sprintf' with type 'int (char *__restrict, const char *__restrict, ...)' [-Wimplicit-function-declaration]
+  618 |                         sprintf(mail->payload, "\nHearbeat message #%u for uart #%d.\n" , count, UART_num);
+      |                         ^
+mail.c(618): note: include the header <stdio.h> or explicitly provide a declaration for 'sprintf'
+mail.c(773): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  773 |         SendText1("Welcome, user 1\n \n");
+      |                   ^~~~~~~~~~~~~~~~~~~~~~
+mail.c(120): note: passing argument to parameter 'txt' here
+  120 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(774): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  774 |         SendText2("Welcome, user 2\n \n");
+      |                   ^~~~~~~~~~~~~~~~~~~~~~
+mail.c(121): note: passing argument to parameter 'txt' here
+  121 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(775): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  775 |         SendText3("Welcome, user 3\n \n");
+      |                   ^~~~~~~~~~~~~~~~~~~~~~
+mail.c(122): note: passing argument to parameter 'txt' here
+  122 | void SendText3(uint8_t *txt);
+      |                         ^
+9 warnings generated.
+compiling mail.c...
+linking...
+Program Size: Code=11748 RO-data=732 RW-data=56 ZI-data=13712  
+".\CMSISrtxMailbox.axf" - 0 Error(s), 10 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.9.0.pack
+                ARM::CMSIS@5.9.0
+                CMSIS (Common Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.6.0
+   * Component: Keil RTX Version: 4.82.0
+   * Component: RTOS Version: 1.0.0
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.MDK-Middleware.7.16.0.pack
+                Keil::MDK-Middleware@7.16.0
+                Middleware for Keil MDK-Professional and MDK-Plus
+   * Component: LED Version: 1.0.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.STM32F1xx_DFP.2.2.0.pack
+                Keil::STM32F1xx_DFP@2.2.0
+                STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
+   * Component: LED Version: 2.0.0
+   * Component: GPIO Version: 1.3
+   * Component: Startup Version: 1.0.0
+
+<h2>Collection of Component include folders:</h2>
+  ./RTE/Device/STM32F103RB
+  ./RTE/_Target_1
+  C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include
+  C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC
+  C:/Users/pablo/AppData/Local/Arm/Packs/Keil/MDK-Middleware/7.16.0/Board
+  C:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/Device/Include
+  C:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/RTE_Driver
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE@5.6.0
+
+   * Component: ARM::CMSIS:RTOS:Keil RTX@4.82.0
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MemPool.c
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/main.c
+      Source file:   CMSIS/RTOS/RTX/SRC/ARM/SVC_Table.s
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Thread.c
+      Include file:  CMSIS/RTOS/RTX/INC/cmsis_os.h
+      Library file:  CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3.lib
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Mutex.c
+      Include file:  CMSIS/RTOS/RTX/UserCodeTemplates/osObjects.h
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Timer.c
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MailQueue.c
+      Source file:   CMSIS/RTOS/RTX/Templates/RTX_Conf_CM.c
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MsgQueue.c
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Semaphore.c
+
+   * Component: Board Support:LED(API)@1.0.0
+      Include file:  Board/Board_LED.h
+
+   * Component: CMSIS:RTOS(API)@1.0.0
+
+   * Component: Keil::Board Support&MCBSTM32E:LED@2.0.0
+      Source file:   Boards/Keil/MCBSTM32E/Common/LED_MCBSTM32E.c
+
+   * Component: Keil::Device:GPIO@1.3
+      Source file:   RTE_Driver/GPIO_STM32F10x.c
+      Include file:  RTE_Driver/GPIO_STM32F10x.h
+
+   * Component: Keil::Device:Startup@1.0.0
+      Source file:   Device/Source/ARM/STM32F1xx_OPT.s
+      Source file:   Device/Source/system_stm32f10x.c
+      Include file:  RTE_Driver/Config/RTE_Device.h
+      Source file:   Device/Source/ARM/startup_stm32f10x_md.s
+Build Time Elapsed:  00:00:00
+</pre>
+</body>
+</html>

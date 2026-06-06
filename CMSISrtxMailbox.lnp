@@ -1,5 +1,5 @@
 --cpu Cortex-M3
-".\main.o"
+".\mail.o"
 ".\uart.o"
 ".\led_mcbstm32e.o"
 "..\..\..\..\..\..\..\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\RTOS\RTX\LIB\ARM\RTX_CM3.lib"
@@ -7,7 +7,7 @@
 ".\gpio_stm32f10x.o"
 ".\startup_stm32f10x_md.o"
 ".\system_stm32f10x.o"
---strict --scatter ".\CMSISrtxMessageQueue.sct"
+--strict --scatter ".\CMSISrtxMailbox.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
---list ".\CMSISrtxMessageQueue.map" -o .\CMSISrtxMessageQueue.axf
+--list ".\CMSISrtxMailbox.map" -o .\CMSISrtxMailbox.axf
