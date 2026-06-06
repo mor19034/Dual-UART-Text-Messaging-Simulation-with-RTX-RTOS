@@ -689,7 +689,7 @@ void Auto_Mess1_Thread (void const *argument)
 			//sprintf(mail2->payload, "Auto Message #%u for UART2. \n" , UART2_seq_count1);
 			//mail2->recID = UART_2;
 			//osMailPut(mail_queue_id, mail2);
-		
+	
 		break;
 				
 		case(UART_3):

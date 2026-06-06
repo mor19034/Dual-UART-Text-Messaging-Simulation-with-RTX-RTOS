@@ -33,6 +33,7 @@
  *---------------------------------------------------------------------------*/
 
 #include "cmsis_os.h"
+#include "cmsis_compiler.h"   /* Provides __WFI() for ARM Compiler 6 (AC6/armclang) */
 
 
 /*----------------------------------------------------------------------------
@@ -214,9 +215,11 @@
 void os_idle_demon (void) {
   /* The idle demon is a system thread, running when no other thread is      */
   /* ready to run.                                                           */
+  /* Low Power Optimization: CPU enters Sleep Mode (WFI) when idle.         */
+  /* Wakes instantly on SysTick (RTOS scheduler) or UART RX interrupts.     */
 
   for (;;) {
-    /* HERE: include optional user code to be executed when no thread runs.*/
+    __WFI();   /* Wait For Interrupt: CPU sleeps until next SysTick or UART RX IRQ */
   }
 }
 
