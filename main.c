@@ -140,8 +140,8 @@ void InputHandler_Thread (void const *argument)
 				}
 					
 				// --- FRAGMENTATION LOOP ---
-				while (remaining_bytes > 0){ /// once we reach the limit of 32 bytes we allocate the message on the mail. 
-					// Allocate RTX Mail, populate it with data and send it 
+				while (remaining_bytes > 0){ /// once we reach the limit of 32 bytes we allocate the message on the mail.
+					// Allocate RTX Mail, populate it with data and send it
 					mail_t *mail;
 					mail = (mail_t*)osMailAlloc(mail_queue_id, osWaitForever);
 					if (mail == NULL){
@@ -152,20 +152,40 @@ void InputHandler_Thread (void const *argument)
 						//  allocates a mail slot and fill it with data
 						mail->source_uart = 1; // Originating from UART1
 						mail->is_fragmented = fragmented_flag;
-						
-						// Calculate how many characters fit in this specific mail slice
-						uint16_t bytes_to_copy = (remaining_bytes > CHUNK_SIZE) ? CHUNK_SIZE : remaining_bytes;
-						//Fragmentate the message 
+
+						// Calculate how many characters fit in this specific mail slice.
+						// If we'd split mid-word, back up to the last space so whole words
+						// stay together on each line.
+						uint16_t bytes_to_copy;
+						if (remaining_bytes <= CHUNK_SIZE) {
+							bytes_to_copy = remaining_bytes; // Last (or only) chunk — copy all
+						} else {
+							// Search backwards from CHUNK_SIZE for the last space
+							bytes_to_copy = CHUNK_SIZE; // Fallback: hard split (no space found)
+							for (i = CHUNK_SIZE; i > 0; i--) {
+								if (local_buffer[buffer_ptr + i - 1] == ' ') {
+									bytes_to_copy = i - 1; // Copy up to (not including) the space
+									break;
+								}
+							}
+						}
+
+						//Copy the slice into the mail payload
 						for (i = 0; i < bytes_to_copy; i++){
 							mail->payload[i] = local_buffer[buffer_ptr + i];
 						}
-						
-						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination              
+
+						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination
 						// Ship it to the Mail Queue
 						osMailPut(mail_queue_id, mail);
-						// Shift tracking pointers forward
+						// Shift tracking pointers forward past the copied bytes
 						buffer_ptr += bytes_to_copy;
 						remaining_bytes -= bytes_to_copy;
+						// Skip the space we split on so the next line has no leading space
+						if (remaining_bytes > 0 && local_buffer[buffer_ptr] == ' ') {
+							buffer_ptr++;
+							remaining_bytes--;
+						}
 					}
 				}
 			}
@@ -203,21 +223,10 @@ void MailOutput_Thread (void const *argument)
             // Set the incoming text color to Cyan for clear tracking
             //SendText((uint8_t *)CLR_RX);
             
-            // Print out the payload piece
+            // Print out the payload piece, then always move to a new line
+            // (fragments are word-wrapped, so each one gets its own line)
             SendText((uint8_t *)mail->payload);
-            
-            if (mail->is_fragmented == 0) 
-            {
-                // This was a complete, standard message
-                // Append newline and reset formatting colors
-                SendText((uint8_t *)("\r\n" CLR_RESET));
-            }
-            else 
-            {
-                // If it's a fragment, we intentionally skip printing "\r\n" 
-                // so the next fragment appends right next to it!
-                SendText((uint8_t *)CLR_RESET);
-            }
+            SendText((uint8_t *)("\r\n" CLR_RESET));
             
             osMutexRelease(uart_mutex);
             

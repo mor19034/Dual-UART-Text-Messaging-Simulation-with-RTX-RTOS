@@ -8,7 +8,7 @@ Copyright (C) 2025 ARM Ltd and ARM Germany GmbH. All rights reserved.
 License Information: Pablo Moreno
 Kettering
 User-based license: Keil MDK Community (non-commercial free of charge)
-Valid until: May 31 2033. Cached until: Jun 5 2026
+Valid until: May 31 2033. Cached until: Jun 14 2026
  
 Tool Versions:
 Toolchain:       Keil MDK Community (non-commercial free of charge  Version: 5.43.0.0
@@ -25,27 +25,12 @@ Dialog DLL:      TCM.DLL V1.56.6.0
  
 <h2>Project:</h2>
 C:\Users\pablo\Documentos\KETTERING\2026\Spring term\ECE_626\Project\Dual-UART Text  Messaging Simulation with RTX RTOS\CMSISrtxMessageQueue.uvprojx
-Project File Date:  05/28/2026
+Project File Date:  06/07/2026
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.24', folder: 'C:\Users\pablo\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'Target 1'
-main.c(50): warning: non-portable path to file '"stm32f10x.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
-   50 | #include "STM32F10x.h"
-      |          ^~~~~~~~~~~~~
-      |          "stm32f10x.h"
-main.c(51): warning: In file included from...
-C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC\cmsis_os.h(73): warning: '__NO_RETURN' macro redefined [-Wmacro-redefined]
-   73 | #define __NO_RETURN __attribute__((noreturn))
-      |         ^
-C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include\cmsis_armclang.h(46): note: previous definition is here
-   46 |   #define __NO_RETURN                            __attribute__((__noreturn__))
-      |           ^
-2 warnings generated.
-compiling main.c...
-linking...
-Program Size: Code=8588 RO-data=436 RW-data=56 ZI-data=17200  
-".\CMSISrtxMessageQueue.axf" - 0 Error(s), 2 Warning(s).
+".\CMSISrtxMessageQueue.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -85,19 +70,19 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE@5.6.0
 
    * Component: ARM::CMSIS:RTOS:Keil RTX@4.82.0
-      Include file:  CMSIS/RTOS/RTX/INC/cmsis_os.h
-      Source file:   CMSIS/RTOS/RTX/Templates/RTX_Conf_CM.c
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/main.c
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MemPool.c
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MsgQueue.c
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Mutex.c
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Semaphore.c
-      Include file:  CMSIS/RTOS/RTX/UserCodeTemplates/osObjects.h
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MailQueue.c
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Thread.c
       Source file:   CMSIS/RTOS/RTX/SRC/ARM/SVC_Table.s
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MsgQueue.c
       Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Timer.c
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Mutex.c
+      Include file:  CMSIS/RTOS/RTX/UserCodeTemplates/osObjects.h
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Semaphore.c
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MailQueue.c
+      Source file:   CMSIS/RTOS/RTX/Templates/RTX_Conf_CM.c
+      Include file:  CMSIS/RTOS/RTX/INC/cmsis_os.h
       Library file:  CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3.lib
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MemPool.c
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/main.c
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Thread.c
 
    * Component: Board Support:LED(API)@1.0.0
       Include file:  Board/Board_LED.h
@@ -112,10 +97,10 @@ Package Vendor: Keil
       Source file:   RTE_Driver/GPIO_STM32F10x.c
 
    * Component: Keil::Device:Startup@1.0.0
-      Source file:   Device/Source/ARM/startup_stm32f10x_md.s
       Source file:   Device/Source/ARM/STM32F1xx_OPT.s
-      Include file:  RTE_Driver/Config/RTE_Device.h
       Source file:   Device/Source/system_stm32f10x.c
+      Source file:   Device/Source/ARM/startup_stm32f10x_md.s
+      Include file:  RTE_Driver/Config/RTE_Device.h
 Build Time Elapsed:  00:00:00
 </pre>
 </body>
