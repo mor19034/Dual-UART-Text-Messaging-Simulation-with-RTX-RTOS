@@ -60,7 +60,7 @@ typedef enum {
 
 typedef struct {
     char payload[MAX_MAIL_PAYLOAD];
-    bool is_fragmented; // 0 = Normal, 1 = Part of a split message
+    uint8_t is_fragmented; // 0 = Normal, 1 = first chunk of a fragmented message, 2 = continuation chunk
     Recipient_ID Receiver; // 1 or 2, so the Tx thread knows where it came from
 	  Sender_ID Sender;    // 1 2 or 3 for intended receiver
 	  uint16_t msgCnt; //mesage count for periodic messages
@@ -275,12 +275,14 @@ char local_buffer[LOCAL_BUF_SIZE];
 	UART_ContextData[UART_1].UART_State = UART_IDLE;
 	
 
-	for (;;) 
+	for (;;)
 	{
-		
+
     	osSignalWait (0x01,osWaitForever);
-		
-		
+
+			UART1_Input = osMessageGet(Q_UART1, 0);
+			intKey1 = (uint8_t)UART1_Input.value.v;
+
 		  switch(UART_ContextData[UART_1].UART_State)
 			{
 			  case(UART_IDLE):
@@ -340,8 +342,9 @@ char local_buffer[LOCAL_BUF_SIZE];
 				}
 					
 				// --- FRAGMENTATION LOOP ---
+				uint16_t chunk_index = 0;
 				while (remaining_bytes > 0){
-					// Allocate RTX Mail, populate it with data and send it 
+					// Allocate RTX Mail, populate it with data and send it
 					Mail *mail;
 					mail = (Mail*)osMailAlloc(mail_queue_id, osWaitForever);
 					if (mail == NULL){
@@ -351,21 +354,42 @@ char local_buffer[LOCAL_BUF_SIZE];
 					{
 						//  allocates a mail slot and fill it with data
 						mail->Sender = Sender_1; // Originating from UART1
-						mail->is_fragmented = fragmented_flag;
+						// 0 = not fragmented, 1 = first chunk of a fragmented message, 2 = continuation chunk
+						mail->is_fragmented = (!fragmented_flag) ? 0 : ((chunk_index == 0) ? 1 : 2);
 						mail->Receiver = 	UART_ContextData[UART_1].Recipient;
-						// Calculate how many characters fit in this specific mail slice
-						uint16_t bytes_to_copy = (remaining_bytes > CHUNK_SIZE) ? CHUNK_SIZE : remaining_bytes;
-						//Fragmentate the message 
+						// Calculate how many characters fit in this specific mail slice.
+						// If we'd split mid-word, back up to the last space so whole words
+						// stay together on each line.
+						uint16_t bytes_to_copy;
+						if (remaining_bytes <= CHUNK_SIZE){
+							bytes_to_copy = remaining_bytes;
+						} else {
+							// Search backwards from CHUNK_SIZE for the last space
+							bytes_to_copy = CHUNK_SIZE; // Fallback: hard split (no space found)
+							for (i = CHUNK_SIZE; i > 0; i--) {
+								if (local_buffer[buffer_ptr + i - 1] == ' ') {
+									bytes_to_copy = i - 1; // Copy up to (not including) the space
+									break;
+								}
+							}
+						}
+						//Fragmentate the message
 						for (i = 0; i < bytes_to_copy; i++){
 							mail->payload[i] = local_buffer[buffer_ptr + i];
 						}
-						
-						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination              
+
+						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination
 						// Ship it to the Mail Queue
 						osMailPut(mail_queue_id, mail);
-						// Shift tracking pointers forward
+						// Shift tracking pointers forward past the copied bytes
 						buffer_ptr += bytes_to_copy;
 						remaining_bytes -= bytes_to_copy;
+						chunk_index++;
+						// Skip the space we split on so the next line has no leading space
+						if (remaining_bytes > 0 && local_buffer[buffer_ptr] == ' ') {
+							buffer_ptr++;
+							remaining_bytes--;
+						}
 					}
 				}
 			}
@@ -483,12 +507,14 @@ char local_buffer[LOCAL_BUF_SIZE];
 	UART_ContextData[UART_2].UART_State = UART_IDLE;
 	
 
-	for (;;) 
+	for (;;)
 	{
-		
+
     	osSignalWait (0x02,osWaitForever);
-		
-		
+
+			UART2_Input = osMessageGet(Q_UART2, 0);
+			intKey2 = (uint8_t)UART2_Input.value.v;
+
 		  switch(UART_ContextData[UART_2].UART_State)
 			{
 			  case(UART_IDLE):
@@ -548,8 +574,9 @@ char local_buffer[LOCAL_BUF_SIZE];
 				}
 					
 				// --- FRAGMENTATION LOOP ---
+				uint16_t chunk_index = 0;
 				while (remaining_bytes > 0){
-					// Allocate RTX Mail, populate it with data and send it 
+					// Allocate RTX Mail, populate it with data and send it
 					Mail *mail;
 					mail = (Mail*)osMailAlloc(mail_queue_id, osWaitForever);
 					if (mail == NULL){
@@ -558,22 +585,43 @@ char local_buffer[LOCAL_BUF_SIZE];
 					}
 					{
 						//  allocates a mail slot and fill it with data
-						mail->Sender = Sender_2; // Originating from UART1
-						mail->is_fragmented = fragmented_flag;
+						mail->Sender = Sender_2; // Originating from UART2
+						// 0 = not fragmented, 1 = first chunk of a fragmented message, 2 = continuation chunk
+						mail->is_fragmented = (!fragmented_flag) ? 0 : ((chunk_index == 0) ? 1 : 2);
 						mail->Receiver = 	UART_ContextData[UART_2].Recipient;
-						// Calculate how many characters fit in this specific mail slice
-						uint16_t bytes_to_copy = (remaining_bytes > CHUNK_SIZE) ? CHUNK_SIZE : remaining_bytes;
-						//Fragmentate the message 
+						// Calculate how many characters fit in this specific mail slice.
+						// If we'd split mid-word, back up to the last space so whole words
+						// stay together on each line.
+						uint16_t bytes_to_copy;
+						if (remaining_bytes <= CHUNK_SIZE){
+							bytes_to_copy = remaining_bytes;
+						} else {
+							// Search backwards from CHUNK_SIZE for the last space
+							bytes_to_copy = CHUNK_SIZE; // Fallback: hard split (no space found)
+							for (i = CHUNK_SIZE; i > 0; i--) {
+								if (local_buffer[buffer_ptr + i - 1] == ' ') {
+									bytes_to_copy = i - 1; // Copy up to (not including) the space
+									break;
+								}
+							}
+						}
+						//Fragmentate the message
 						for (i = 0; i < bytes_to_copy; i++){
 							mail->payload[i] = local_buffer[buffer_ptr + i];
 						}
-						
-						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination              
+
+						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination
 						// Ship it to the Mail Queue
 						osMailPut(mail_queue_id, mail);
-						// Shift tracking pointers forward
+						// Shift tracking pointers forward past the copied bytes
 						buffer_ptr += bytes_to_copy;
 						remaining_bytes -= bytes_to_copy;
+						chunk_index++;
+						// Skip the space we split on so the next line has no leading space
+						if (remaining_bytes > 0 && local_buffer[buffer_ptr] == ' ') {
+							buffer_ptr++;
+							remaining_bytes--;
+						}
 					}
 				}
 			}
@@ -674,12 +722,14 @@ char local_buffer[LOCAL_BUF_SIZE];
 	UART_ContextData[UART_3].UART_State = UART_IDLE;
 	
 
-	for (;;) 
+	for (;;)
 	{
-		
+
     	osSignalWait (0x02,osWaitForever);
-		
-		
+
+			UART3_Input = osMessageGet(Q_UART3, 0);
+			intKey3 = (uint8_t)UART3_Input.value.v;
+
 		  switch(UART_ContextData[UART_3].UART_State)
 			{
 			  case(UART_IDLE):
@@ -739,8 +789,9 @@ char local_buffer[LOCAL_BUF_SIZE];
 				}
 					
 				// --- FRAGMENTATION LOOP ---
+				uint16_t chunk_index = 0;
 				while (remaining_bytes > 0){
-					// Allocate RTX Mail, populate it with data and send it 
+					// Allocate RTX Mail, populate it with data and send it
 					Mail *mail;
 					mail = (Mail*)osMailAlloc(mail_queue_id, osWaitForever);
 					if (mail == NULL){
@@ -749,22 +800,43 @@ char local_buffer[LOCAL_BUF_SIZE];
 					}
 					{
 						//  allocates a mail slot and fill it with data
-						mail->Sender = Sender_3; // Originating from UART1
-						mail->is_fragmented = fragmented_flag;
+						mail->Sender = Sender_3; // Originating from UART3
+						// 0 = not fragmented, 1 = first chunk of a fragmented message, 2 = continuation chunk
+						mail->is_fragmented = (!fragmented_flag) ? 0 : ((chunk_index == 0) ? 1 : 2);
 						mail->Receiver = 	UART_ContextData[UART_3].Recipient;
-						// Calculate how many characters fit in this specific mail slice
-						uint16_t bytes_to_copy = (remaining_bytes > CHUNK_SIZE) ? CHUNK_SIZE : remaining_bytes;
-						//Fragmentate the message 
+						// Calculate how many characters fit in this specific mail slice.
+						// If we'd split mid-word, back up to the last space so whole words
+						// stay together on each line.
+						uint16_t bytes_to_copy;
+						if (remaining_bytes <= CHUNK_SIZE){
+							bytes_to_copy = remaining_bytes;
+						} else {
+							// Search backwards from CHUNK_SIZE for the last space
+							bytes_to_copy = CHUNK_SIZE; // Fallback: hard split (no space found)
+							for (i = CHUNK_SIZE; i > 0; i--) {
+								if (local_buffer[buffer_ptr + i - 1] == ' ') {
+									bytes_to_copy = i - 1; // Copy up to (not including) the space
+									break;
+								}
+							}
+						}
+						//Fragmentate the message
 						for (i = 0; i < bytes_to_copy; i++){
 							mail->payload[i] = local_buffer[buffer_ptr + i];
 						}
-						
-						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination              
+
+						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination
 						// Ship it to the Mail Queue
 						osMailPut(mail_queue_id, mail);
-						// Shift tracking pointers forward
+						// Shift tracking pointers forward past the copied bytes
 						buffer_ptr += bytes_to_copy;
 						remaining_bytes -= bytes_to_copy;
+						chunk_index++;
+						// Skip the space we split on so the next line has no leading space
+						if (remaining_bytes > 0 && local_buffer[buffer_ptr] == ' ') {
+							buffer_ptr++;
+							remaining_bytes--;
+						}
 					}
 				}
 			}
@@ -871,20 +943,23 @@ void Tx_Routing_Thread (void const *argument)
 					switch(mail->Receiver)
 				{
 					case Recipient_1:
-            // Print out the payload piece
+            // Print out the payload piece (only show the header once, for the first chunk)
 					  if(UART_ContextData[UART_1].Mute_Sender[UART_2] != false){
-					  SendText1(Header_Buffer);
+					  if (mail->is_fragmented != 2) SendText1(Header_Buffer);
             SendText1((uint8_t *)mail->payload);
+						SendText1((uint8_t *)"\r\n");
 						}
           break;
 					case Recipient_2:
-						SendText2(Header_Buffer);
+						if (mail->is_fragmented != 2) SendText2(Header_Buffer);
 						SendText2((uint8_t *)mail->payload);
+						SendText2((uint8_t *)"\r\n");
 					break;
 					case Recipient_3:
-						SendText3(Header_Buffer);
+						if (mail->is_fragmented != 2) SendText3(Header_Buffer);
 						SendText3((uint8_t *)mail->payload);
-					break;					
+						SendText3((uint8_t *)"\r\n");
+					break;
            
 					case Recipient_Group:
 						for( index = 0; index < NUM_UARTS; index++){
@@ -903,25 +978,25 @@ void Tx_Routing_Thread (void const *argument)
 										 if((UART_ContextData[UART_1].Mute_Sender[UART_2] == false) &&
 											 (UART_ContextData[UART_1].Mute_Sender[UART_3] == false))
 												{
-										 SendText1(Header_Buffer);
+										 if (mail->is_fragmented != 2) SendText1(Header_Buffer);
 									   SendText1(mail->payload);
-										 SendText1("\n");
+										 SendText1("\r\n");
 											 }
-										break; 
-									 
+										break;
+
 									 }
 								   case UART_2:
 									 {
-										 SendText2(Header_Buffer);
+										 if (mail->is_fragmented != 2) SendText2(Header_Buffer);
 									   SendText2(mail->payload);
-										 SendText2 ("\n");
+										 SendText2 ("\r\n");
 									 break;
 									 }
 								   case UART_3:
 									 {
-										 SendText3(Header_Buffer);
+										 if (mail->is_fragmented != 2) SendText3(Header_Buffer);
 									   SendText3(mail->payload);
-										 SendText3("\n");
+										 SendText3("\r\n");
 									 break;
 									 }
 										 
@@ -1162,29 +1237,27 @@ int main (void)
 USART1_IRQHandler: This is the IRQ handler for UART #1 input.
 *---------------------------------------------------------------------------*/
 void USART1_IRQHandler (void)
-{ 
-  intKey1 = (int8_t) (USART1->DR & 0x1FF); 
-
+{
+  intKey1 = (int8_t) (USART1->DR & 0x1FF);
+	osMessagePut(Q_UART1, intKey1, 0);
 	osSignalSet	(T_Text1,0x01);
-	//osMessagePut(UART1,'1', 0);
-	
-} 
+
+}
 
 
 void USART2_IRQHandler (void) {
- 
+
     intKey2 = (int8_t) (USART2->DR & 0x1FF);
+		osMessagePut(Q_UART2, intKey2, 0);
 		osSignalSet	(T_Text2,0x02);
-    //osMessagePut(UART1,'2', 0);
 }
 
 // UART3 Interupt Handler
 void USART3_IRQHandler (void) {
 
     intKey3 = (int8_t) (USART3->DR & 0x1FF);
-	
+		osMessagePut(Q_UART3, intKey3, 0);
 		osSignalSet	(T_Text3,0x02);
-    //osMessagePut(UART1,'3', 0);
 }
 
 /*----------------------------------------------------------------------------

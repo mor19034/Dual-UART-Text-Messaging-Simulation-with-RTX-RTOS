@@ -5,14 +5,14 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.43.1.0
 Copyright (C) 2025 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Jeremy Gooch
-Kettering University (Student)
+License Information: Pablo Moreno
+Kettering
 User-based license: Keil MDK Community (non-commercial free of charge)
-Valid until: May 31 2033. Cached until: Jun 18 2026
+Valid until: May 31 2033. Cached until: Jun 17 2026
  
 Tool Versions:
 Toolchain:       Keil MDK Community (non-commercial free of charge  Version: 5.43.0.0
-Toolchain Path:  C:\Users\jmgoo\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin
+Toolchain Path:  C:\Users\pablo\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin
 C Compiler:      ArmClang.exe V6.24
 Assembler:       Armasm.exe V6.24
 Linker/Locator:  ArmLink.exe V6.24
@@ -24,13 +24,281 @@ Target DLL:      UL2CM3.DLL V1.164.16.0
 Dialog DLL:      TCM.DLL V1.56.6.0
  
 <h2>Project:</h2>
-C:\Users\jmgoo\OneDrive\Desktop\RTOS_CE_626\In_Progress_UARTChanges\Work_AutoThread\CMSISrtxMailbox.uvprojx
-Project File Date:  05/29/2026
+C:\Users\pablo\Documentos\KETTERING\2026\Spring term\ECE_626\Project\Dual-UART Text  Messaging Simulation with RTX RTOS\CMSISrtxMailbox.uvprojx
+Project File Date:  06/11/2026
 
 <h2>Output:</h2>
-*** Using Compiler 'V6.24', folder: 'C:\Users\jmgoo\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
+*** Using Compiler 'V6.24', folder: 'C:\Users\pablo\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'Target 1'
-".\CMSISrtxMailbox.axf" - 0 Error(s), 0 Warning(s).
+mail.c(6): warning: non-portable path to file '"stm32f10x.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
+    6 | #include "STM32F10x.h"
+      |          ^~~~~~~~~~~~~
+      |          "stm32f10x.h"
+mail.c(7): warning: In file included from...
+C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC\cmsis_os.h(73): warning: '__NO_RETURN' macro redefined [-Wmacro-redefined]
+   73 | #define __NO_RETURN __attribute__((noreturn))
+      |         ^
+C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include\cmsis_armclang.h(46): note: previous definition is here
+   46 |   #define __NO_RETURN                            __attribute__((__noreturn__))
+      |           ^
+mail.c(423): warning: passing 'char[18]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  423 |                                                                         SendText1("Messaging: Group\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(430): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  430 |                                                                         SendText1("Messaging: User 2\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(437): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  437 |                                                                   SendText1("Messaging: User 3\n");
+      |                                                                             ^~~~~~~~~~~~~~~~~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(448): warning: passing 'char[16]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  448 |                                                                         SendText1("Messages Muted\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(458): warning: passing 'char[18]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  458 |                                                                         SendText1("Messages UnMuted\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(467): warning: passing 'char[45]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  467 |                                                                   SendText1("Menu Closed, Message traffic will resume...\n");
+      |                                                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(472): warning: passing 'char[72]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  472 |                                                                         SendText1("Invalid Entry, please select valid menu item...!\nOr press '9' to exit!\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(655): warning: passing 'char[18]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  655 |                                                                         SendText2("Messaging: Group\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~~~
+mail.c(157): note: passing argument to parameter 'txt' here
+  157 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(662): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  662 |                                                                         SendText2("Messaging: User 1\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~~~~
+mail.c(157): note: passing argument to parameter 'txt' here
+  157 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(669): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  669 |                                                                   SendText2("Messaging: User 3\n");
+      |                                                                             ^~~~~~~~~~~~~~~~~~~~~
+mail.c(157): note: passing argument to parameter 'txt' here
+  157 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(676): warning: passing 'char[16]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  676 |                                                                         SendText2("Messages Muted\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~
+mail.c(157): note: passing argument to parameter 'txt' here
+  157 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(682): warning: passing 'char[45]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  682 |                                                                   SendText3("Menu Closed, Message traffic will resume...\n");
+      |                                                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(687): warning: passing 'char[72]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  687 |                                                                         SendText2("Invalid Entry, please select valid menu item...!\nOr press '9' to exit!\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mail.c(157): note: passing argument to parameter 'txt' here
+  157 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(870): warning: passing 'char[18]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  870 |                                                                         SendText3("Messaging: Group\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(877): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  877 |                                                                         SendText3("Messaging: User 1\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(884): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  884 |                                                                   SendText3("Messaging: User 2\n");
+      |                                                                             ^~~~~~~~~~~~~~~~~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(891): warning: passing 'char[16]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  891 |                                                                         SendText3("Messages Muted\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(897): warning: passing 'char[45]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  897 |                                                                   SendText3("Menu Closed, Message traffic will resume...\n");
+      |                                                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(902): warning: passing 'char[72]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  902 |                                                                         SendText3("Invalid Entry, please select valid menu item...!\nOr press '9' to exit!\n");
+      |                                                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(948): warning: passing 'char[64]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  948 |                                           if (mail->is_fragmented != 2) SendText1(Header_Buffer);
+      |                                                                                   ^~~~~~~~~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(954): warning: passing 'char[64]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  954 |                                                 if (mail->is_fragmented != 2) SendText2(Header_Buffer);
+      |                                                                                         ^~~~~~~~~~~~~
+mail.c(157): note: passing argument to parameter 'txt' here
+  157 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(959): warning: passing 'char[64]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  959 |                                                 if (mail->is_fragmented != 2) SendText3(Header_Buffer);
+      |                                                                                         ^~~~~~~~~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(981): warning: passing 'char[64]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  981 |                                                                                  if (mail->is_fragmented != 2) SendText1(Header_Buffer);
+      |                                                                                                                          ^~~~~~~~~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(982): warning: passing 'char[32]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  982 |                                                                            SendText1(mail->payload);
+      |                                                                                      ^~~~~~~~~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(983): warning: passing 'char[3]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  983 |                                                                                  SendText1("\r\n");
+      |                                                                                            ^~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(990): warning: passing 'char[64]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  990 |                                                                                  if (mail->is_fragmented != 2) SendText2(Header_Buffer);
+      |                                                                                                                          ^~~~~~~~~~~~~
+mail.c(157): note: passing argument to parameter 'txt' here
+  157 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(991): warning: passing 'char[32]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  991 |                                                                            SendText2(mail->payload);
+      |                                                                                      ^~~~~~~~~~~~~
+mail.c(157): note: passing argument to parameter 'txt' here
+  157 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(992): warning: passing 'char[3]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  992 |                                                                                  SendText2 ("\r\n");
+      |                                                                                             ^~~~~~
+mail.c(157): note: passing argument to parameter 'txt' here
+  157 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(997): warning: passing 'char[64]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  997 |                                                                                  if (mail->is_fragmented != 2) SendText3(Header_Buffer);
+      |                                                                                                                          ^~~~~~~~~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(998): warning: passing 'char[32]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  998 |                                                                            SendText3(mail->payload);
+      |                                                                                      ^~~~~~~~~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(999): warning: passing 'char[3]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  999 |                                                                                  SendText3("\r\n");
+      |                                                                                            ^~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(1084): warning: implicitly declaring library function 'sprintf' with type 'int (char *__restrict, const char *__restrict, ...)' [-Wimplicit-function-declaration]
+ 1084 |                         sprintf(mail->payload, "\nHearbeat message #%u for uart #%d." , count, UART_num);
+      |                         ^
+mail.c(1084): note: include the header <stdio.h> or explicitly provide a declaration for 'sprintf'
+mail.c(1199): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+ 1199 |         SendText1("Welcome, user 1\n \n");
+      |                   ^~~~~~~~~~~~~~~~~~~~~~
+mail.c(156): note: passing argument to parameter 'txt' here
+  156 | void SendText1(uint8_t *txt);
+      |                         ^
+mail.c(1200): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+ 1200 |         SendText2("Welcome, user 2\n \n");
+      |                   ^~~~~~~~~~~~~~~~~~~~~~
+mail.c(157): note: passing argument to parameter 'txt' here
+  157 | void SendText2(uint8_t *txt);
+      |                         ^
+mail.c(1201): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+ 1201 |         SendText3("Welcome, user 3\n \n");
+      |                   ^~~~~~~~~~~~~~~~~~~~~~
+mail.c(158): note: passing argument to parameter 'txt' here
+  158 | void SendText3(uint8_t *txt);
+      |                         ^
+mail.c(1321): warning: passing 'char[102]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+ 1321 |                   SendText1("\nWelcome to message menu: \n"
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1322 |                                    "2 - Message User 2\n"
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~
+ 1323 |                                    "3 - Message User 3\n"
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~
+ 1324 |                  "g - Message GROUP\n"                  
+      |                  ~~~~~~~~~~~~~~~~~~~~~
+ 1325 |                                    "m - Mute messages\n");
+      |                                    ~~~~~~~~~~~~~~~~~~~~~
+mail.c(1267): note: passing argument to parameter 'text' here
+ 1267 | void SendText1(uint8_t *text)
+      |                         ^
+mail.c(1328): warning: passing 'char[102]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+ 1328 |                 {                 SendText2("\nWelcome to message menu: \n"
+      |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1329 |                                    "1 - Message User 1\n"
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~
+ 1330 |                                    "3 - Message User 3\n"
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~
+ 1331 |                  "g - Message GROUP\n"                  
+      |                  ~~~~~~~~~~~~~~~~~~~~~
+ 1332 |                                    "m - Mute messages\n");
+      |                                    ~~~~~~~~~~~~~~~~~~~~~
+mail.c(1284): note: passing argument to parameter 'text' here
+ 1284 | void SendText2(uint8_t *text)
+      |                         ^
+mail.c(1338): warning: passing 'char[102]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+ 1338 |                 {                 SendText3("\nWelcome to message menu: \n"
+      |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1339 |                                    "2 - Message User 2\n"
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~
+ 1340 |                                    "3 - Message User 3\n"
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~
+ 1341 |                  "g - Message GROUP\n"                  
+      |                  ~~~~~~~~~~~~~~~~~~~~~
+ 1342 |                                    "m - Mute messages\n");
+      |                                    ~~~~~~~~~~~~~~~~~~~~~
+mail.c(1301): note: passing argument to parameter 'text' here
+ 1301 | void SendText3(uint8_t *text)
+      |                         ^
+mail.c(1317): warning: enumeration value 'NUM_UARTS' not handled in switch [-Wswitch]
+ 1317 |   switch(Output_ID){
+      |          ^~~~~~~~~
+41 warnings generated.
+compiling mail.c...
+linking...
+Program Size: Code=14932 RO-data=1264 RW-data=56 ZI-data=18112  
+".\CMSISrtxMailbox.axf" - 0 Error(s), 41 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -59,30 +327,30 @@ Package Vendor: Keil
 <h2>Collection of Component include folders:</h2>
   ./RTE/Device/STM32F103RB
   ./RTE/_Target_1
-  C:/Users/jmgoo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include
-  C:/Users/jmgoo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC
-  C:/Users/jmgoo/AppData/Local/Arm/Packs/Keil/MDK-Middleware/7.16.0/Board
-  C:/Users/jmgoo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/Device/Include
-  C:/Users/jmgoo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/RTE_Driver
+  C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include
+  C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC
+  C:/Users/pablo/AppData/Local/Arm/Packs/Keil/MDK-Middleware/7.16.0/Board
+  C:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/Device/Include
+  C:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/RTE_Driver
 
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE@5.6.0
 
    * Component: ARM::CMSIS:RTOS:Keil RTX@4.82.0
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MailQueue.c
-      Include file:  CMSIS/RTOS/RTX/UserCodeTemplates/osObjects.h
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MsgQueue.c
       Source file:   CMSIS/RTOS/RTX/Templates/RTX_Conf_CM.c
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Mutex.c
+      Include file:  CMSIS/RTOS/RTX/UserCodeTemplates/osObjects.h
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Thread.c
       Include file:  CMSIS/RTOS/RTX/INC/cmsis_os.h
+      Source file:   CMSIS/RTOS/RTX/SRC/ARM/SVC_Table.s
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MailQueue.c
       Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MemPool.c
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Semaphore.c
       Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Timer.c
       Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/main.c
-      Source file:   CMSIS/RTOS/RTX/SRC/ARM/SVC_Table.s
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Mutex.c
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/MsgQueue.c
       Library file:  CMSIS/RTOS/RTX/LIB/ARM/RTX_CM3.lib
-      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Thread.c
+      Source file:   CMSIS/RTOS/RTX/UserCodeTemplates/Semaphore.c
 
    * Component: Board Support:LED(API)@1.0.0
       Include file:  Board/Board_LED.h
@@ -97,10 +365,10 @@ Package Vendor: Keil
       Include file:  RTE_Driver/GPIO_STM32F10x.h
 
    * Component: Keil::Device:Startup@1.0.0
-      Source file:   Device/Source/ARM/STM32F1xx_OPT.s
       Source file:   Device/Source/ARM/startup_stm32f10x_md.s
-      Source file:   Device/Source/system_stm32f10x.c
+      Source file:   Device/Source/ARM/STM32F1xx_OPT.s
       Include file:  RTE_Driver/Config/RTE_Device.h
+      Source file:   Device/Source/system_stm32f10x.c
 Build Time Elapsed:  00:00:00
 </pre>
 </body>
