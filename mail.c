@@ -16,6 +16,7 @@
 #define MAX_MAIL_PAYLOAD 32
 #define LOCAL_BUF_SIZE 128 // A large temporary buffer to hold input until 'Enter' is pressed
 #define CHUNK_SIZE     (MAX_MAIL_PAYLOAD - 1) // 31 characters + 1 for '\0'
+#define CLR_SYSTEM  ""
 
 typedef struct {
     char payload[MAX_MAIL_PAYLOAD];
@@ -245,8 +246,23 @@ void UART1_Rx_Thread (void const *argument)
 						// 0 = not fragmented, 1 = first chunk of a fragmented message, 2 = continuation chunk
 						mail->is_fragmented = (!fragmented_flag) ? 0 : ((chunk_index == 0) ? 1 : 2);
 						mail->recID = UART_2;
-						// Calculate how many characters fit in this specific mail slice
-						uint16_t bytes_to_copy = (remaining_bytes > CHUNK_SIZE) ? CHUNK_SIZE : remaining_bytes;
+						
+						// Calculate how many characters fit in this specific mail slice.
+						// If we'd split mid-word, back up to the last space so whole words
+						// stay together on each line.
+						uint16_t bytes_to_copy; 
+						if (remaining_bytes <= CHUNK_SIZE){
+							bytes_to_copy = remaining_bytes;
+						} else {
+							// Search backwards from CHUNK_SIZE for the last space
+							bytes_to_copy = CHUNK_SIZE; // Fallback: hard split (no space found)
+							for (i = CHUNK_SIZE; i > 0; i--) {
+								if (local_buffer[buffer_ptr + i - 1] == ' ') {
+									bytes_to_copy = i - 1; // Copy up to (not including) the space
+									break;
+						}
+					}
+				}
 						//Fragmentate the message 
 						for (i = 0; i < bytes_to_copy; i++){
 							mail->payload[i] = local_buffer[buffer_ptr + i];
@@ -255,13 +271,18 @@ void UART1_Rx_Thread (void const *argument)
 						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination              
 						// Ship it to the Mail Queue
 						osMailPut(mail_queue_id, mail);
-						// Shift tracking pointers forward
+						// Shift tracking pointers forward past the copied bytes
 						buffer_ptr += bytes_to_copy;
 						remaining_bytes -= bytes_to_copy;
 						chunk_index++;
+						// Skip the space we split on so the next line has no leading space
+						if (remaining_bytes > 0 && local_buffer[buffer_ptr] == ' ') {
+							buffer_ptr++;
+							remaining_bytes--;
 					}
 				}
 			}
+		}
 
 			index = 0; // Clear index tracking for the next fresh message
 			}
@@ -270,16 +291,9 @@ void UART1_Rx_Thread (void const *argument)
 			if (index < LOCAL_BUF_SIZE - 1) {
 					local_buffer[index++] = intKey1;
 			}
-		
-		
-		
-		
-		
-		
-	}
-
-}	
-	}
+		}
+	}	
+}
 
 /*----------------------------------------------------------------------------
  * :
@@ -335,24 +349,44 @@ char local_buffer[LOCAL_BUF_SIZE];
 					}
 					{
 						//  allocates a mail slot and fill it with data
-						mail->sendID = 2; // Originating from UART1
+						mail->sendID = 2; // Originating from UART2
 						// 0 = not fragmented, 1 = first chunk of a fragmented message, 2 = continuation chunk
 						mail->is_fragmented = (!fragmented_flag) ? 0 : ((chunk_index == 0) ? 1 : 2);
 						mail->recID = UART_3;
-						// Calculate how many characters fit in this specific mail slice
-						uint16_t bytes_to_copy = (remaining_bytes > CHUNK_SIZE) ? CHUNK_SIZE : remaining_bytes;
-						//Fragmentate the message 
+
+						// Calculate how many characters fit in this specific mail slice.
+						// If we'd split mid-word, back up to the last space so whole words
+						// stay together on each line.
+						uint16_t bytes_to_copy;
+						if (remaining_bytes <= CHUNK_SIZE){
+							bytes_to_copy = remaining_bytes;
+						} else {
+							// Search backwards from CHUNK_SIZE for the last space
+							bytes_to_copy = CHUNK_SIZE; // Fallback: hard split (no space found)
+							for (i = CHUNK_SIZE; i > 0; i--) {
+								if (local_buffer[buffer_ptr + i - 1] == ' ') {
+									bytes_to_copy = i - 1; // Copy up to (not including) the space
+									break;
+								}
+							}
+						}
+						//Fragmentate the message
 						for (i = 0; i < bytes_to_copy; i++){
 							mail->payload[i] = local_buffer[buffer_ptr + i];
 						}
-						
-						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination              
+
+						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination
 						// Ship it to the Mail Queue
 						osMailPut(mail_queue_id, mail);
-						// Shift tracking pointers forward
+						// Shift tracking pointers forward past the copied bytes
 						buffer_ptr += bytes_to_copy;
 						remaining_bytes -= bytes_to_copy;
 						chunk_index++;
+						// Skip the space we split on so the next line has no leading space
+						if (remaining_bytes > 0 && local_buffer[buffer_ptr] == ' ') {
+							buffer_ptr++;
+							remaining_bytes--;
+						}
 					}
 				}
 			}
@@ -430,24 +464,44 @@ char local_buffer[LOCAL_BUF_SIZE];
 					}
 					{
 						//  allocates a mail slot and fill it with data
-						mail->sendID = UART_3; // Originating from UART1
+						mail->sendID = UART_3; // Originating from UART3
 						// 0 = not fragmented, 1 = first chunk of a fragmented message, 2 = continuation chunk
 						mail->is_fragmented = (!fragmented_flag) ? 0 : ((chunk_index == 0) ? 1 : 2);
 						mail->recID = UART_1;
-						// Calculate how many characters fit in this specific mail slice
-						uint16_t bytes_to_copy = (remaining_bytes > CHUNK_SIZE) ? CHUNK_SIZE : remaining_bytes;
-						//Fragmentate the message 
+
+						// Calculate how many characters fit in this specific mail slice.
+						// If we'd split mid-word, back up to the last space so whole words
+						// stay together on each line.
+						uint16_t bytes_to_copy;
+						if (remaining_bytes <= CHUNK_SIZE){
+							bytes_to_copy = remaining_bytes;
+						} else {
+							// Search backwards from CHUNK_SIZE for the last space
+							bytes_to_copy = CHUNK_SIZE; // Fallback: hard split (no space found)
+							for (i = CHUNK_SIZE; i > 0; i--) {
+								if (local_buffer[buffer_ptr + i - 1] == ' ') {
+									bytes_to_copy = i - 1; // Copy up to (not including) the space
+									break;
+								}
+							}
+						}
+						//Fragmentate the message
 						for (i = 0; i < bytes_to_copy; i++){
 							mail->payload[i] = local_buffer[buffer_ptr + i];
 						}
-						
-						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination              
+
+						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination
 						// Ship it to the Mail Queue
 						osMailPut(mail_queue_id, mail);
-						// Shift tracking pointers forward
+						// Shift tracking pointers forward past the copied bytes
 						buffer_ptr += bytes_to_copy;
 						remaining_bytes -= bytes_to_copy;
 						chunk_index++;
+						// Skip the space we split on so the next line has no leading space
+						if (remaining_bytes > 0 && local_buffer[buffer_ptr] == ' ') {
+							buffer_ptr++;
+							remaining_bytes--;
+						}
 					}
 				}
 			}
@@ -496,16 +550,19 @@ void Tx_Routing_Thread (void const *argument)
 				{
 					case 1:
             // Print out the payload piece (only show "[rec]:" once, for the first chunk)
-            if (mail->is_fragmented != 2) SendText1("[rec]:");
+            if (mail->is_fragmented != 2) SendText1((uint8_t *)"[rec]:");
             SendText1((uint8_t *)mail->payload);
+						SendText1((uint8_t *)("\r\n" CLR_SYSTEM)); // fragments are word-wrapped, so each one gets its own line
           break;
 					case 2:
-						if (mail->is_fragmented != 2) SendText2("[rec]:");
+						if (mail->is_fragmented != 2) SendText2((uint8_t *)"[rec]:");
 						SendText2((uint8_t *)mail->payload);
+						SendText2((uint8_t *)("\r\n" CLR_SYSTEM));
 					break;
 					case 3:
-						if (mail->is_fragmented != 2) SendText3("[rec]:");
+						if (mail->is_fragmented != 2) SendText3((uint8_t *)"[rec]:");
 						SendText3((uint8_t *)mail->payload);
+						SendText3((uint8_t *)("\r\n" CLR_SYSTEM));
 					break;
 
             //osMutexRelease(uart_mutex);
