@@ -230,8 +230,9 @@ void UART1_Rx_Thread (void const *argument)
 				}
 					
 				// --- FRAGMENTATION LOOP ---
+				uint16_t chunk_index = 0;
 				while (remaining_bytes > 0){
-					// Allocate RTX Mail, populate it with data and send it 
+					// Allocate RTX Mail, populate it with data and send it
 					Mail *mail;
 					mail = (Mail*)osMailAlloc(mail_queue_id, osWaitForever);
 					if (mail == NULL){
@@ -241,7 +242,8 @@ void UART1_Rx_Thread (void const *argument)
 					{
 						//  allocates a mail slot and fill it with data
 						mail->sendID = 1; // Originating from UART1
-						mail->is_fragmented = fragmented_flag;
+						// 0 = not fragmented, 1 = first chunk of a fragmented message, 2 = continuation chunk
+						mail->is_fragmented = (!fragmented_flag) ? 0 : ((chunk_index == 0) ? 1 : 2);
 						mail->recID = UART_2;
 						// Calculate how many characters fit in this specific mail slice
 						uint16_t bytes_to_copy = (remaining_bytes > CHUNK_SIZE) ? CHUNK_SIZE : remaining_bytes;
@@ -256,12 +258,13 @@ void UART1_Rx_Thread (void const *argument)
 						// Shift tracking pointers forward
 						buffer_ptr += bytes_to_copy;
 						remaining_bytes -= bytes_to_copy;
+						chunk_index++;
 					}
 				}
 			}
-			
+
 			index = 0; // Clear index tracking for the next fresh message
-			} 
+			}
 		else{
 			// 3. Accumulate normal typing into buffer safely avoiding memory overflow
 			if (index < LOCAL_BUF_SIZE - 1) {
@@ -321,8 +324,9 @@ char local_buffer[LOCAL_BUF_SIZE];
 				}
 					
 				// --- FRAGMENTATION LOOP ---
+				uint16_t chunk_index = 0;
 				while (remaining_bytes > 0){
-					// Allocate RTX Mail, populate it with data and send it 
+					// Allocate RTX Mail, populate it with data and send it
 					Mail *mail;
 					mail = (Mail*)osMailAlloc(mail_queue_id, osWaitForever);
 					if (mail == NULL){
@@ -332,7 +336,8 @@ char local_buffer[LOCAL_BUF_SIZE];
 					{
 						//  allocates a mail slot and fill it with data
 						mail->sendID = 2; // Originating from UART1
-						mail->is_fragmented = fragmented_flag;
+						// 0 = not fragmented, 1 = first chunk of a fragmented message, 2 = continuation chunk
+						mail->is_fragmented = (!fragmented_flag) ? 0 : ((chunk_index == 0) ? 1 : 2);
 						mail->recID = UART_3;
 						// Calculate how many characters fit in this specific mail slice
 						uint16_t bytes_to_copy = (remaining_bytes > CHUNK_SIZE) ? CHUNK_SIZE : remaining_bytes;
@@ -347,12 +352,13 @@ char local_buffer[LOCAL_BUF_SIZE];
 						// Shift tracking pointers forward
 						buffer_ptr += bytes_to_copy;
 						remaining_bytes -= bytes_to_copy;
+						chunk_index++;
 					}
 				}
 			}
-			
+
 			index = 0; // Clear index tracking for the next fresh message
-			} 
+			}
 		else{
 			// 3. Accumulate normal typing into buffer safely avoiding memory overflow
 			if (index < LOCAL_BUF_SIZE - 1) {
@@ -413,8 +419,9 @@ char local_buffer[LOCAL_BUF_SIZE];
 				}
 					
 				// --- FRAGMENTATION LOOP ---
+				uint16_t chunk_index = 0;
 				while (remaining_bytes > 0){
-					// Allocate RTX Mail, populate it with data and send it 
+					// Allocate RTX Mail, populate it with data and send it
 					Mail *mail;
 					mail = (Mail*)osMailAlloc(mail_queue_id, osWaitForever);
 					if (mail == NULL){
@@ -424,7 +431,8 @@ char local_buffer[LOCAL_BUF_SIZE];
 					{
 						//  allocates a mail slot and fill it with data
 						mail->sendID = UART_3; // Originating from UART1
-						mail->is_fragmented = fragmented_flag;
+						// 0 = not fragmented, 1 = first chunk of a fragmented message, 2 = continuation chunk
+						mail->is_fragmented = (!fragmented_flag) ? 0 : ((chunk_index == 0) ? 1 : 2);
 						mail->recID = UART_1;
 						// Calculate how many characters fit in this specific mail slice
 						uint16_t bytes_to_copy = (remaining_bytes > CHUNK_SIZE) ? CHUNK_SIZE : remaining_bytes;
@@ -439,12 +447,13 @@ char local_buffer[LOCAL_BUF_SIZE];
 						// Shift tracking pointers forward
 						buffer_ptr += bytes_to_copy;
 						remaining_bytes -= bytes_to_copy;
+						chunk_index++;
 					}
 				}
 			}
-			
+
 			index = 0; // Clear index tracking for the next fresh message
-			} 
+			}
 		else{
 			// 3. Accumulate normal typing into buffer safely avoiding memory overflow
 			if (index < LOCAL_BUF_SIZE - 1) {
@@ -486,18 +495,18 @@ void Tx_Routing_Thread (void const *argument)
         switch(mail->recID)
 				{
 					case 1:
-            // Print out the payload piece
-					  SendText1("[rec]:");
+            // Print out the payload piece (only show "[rec]:" once, for the first chunk)
+            if (mail->is_fragmented != 2) SendText1("[rec]:");
             SendText1((uint8_t *)mail->payload);
           break;
 					case 2:
-						SendText2("[rec]:");
+						if (mail->is_fragmented != 2) SendText2("[rec]:");
 						SendText2((uint8_t *)mail->payload);
 					break;
 					case 3:
-						SendText3("[rec]:");
+						if (mail->is_fragmented != 2) SendText3("[rec]:");
 						SendText3((uint8_t *)mail->payload);
-					break;					
+					break;
 
             //osMutexRelease(uart_mutex);
 

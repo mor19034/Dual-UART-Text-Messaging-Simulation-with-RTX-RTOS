@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\CMSISrtxMailbox.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\CMSISrtxMailbox.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Sat Jun  6 18:15:22 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6240002: Last Updated: Wed Jun 10 18:00:29 2026
 <BR><P>
 <H3>Maximum Stack Usage =        184 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -341,7 +341,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> mail.o(.rodata)
 </UL>
-<P><STRONG><a name="[51]"></a>UART1_Rx_Thread</STRONG> (Thumb, 264 bytes, Stack size 144 bytes, mail.o(.text))
+<P><STRONG><a name="[51]"></a>UART1_Rx_Thread</STRONG> (Thumb, 294 bytes, Stack size 144 bytes, mail.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = UART1_Rx_Thread &rArr; osMailPut &rArr; osMessagePut &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMailPut
@@ -352,7 +352,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> mail.o(.rodata)
 </UL>
-<P><STRONG><a name="[52]"></a>UART2_Rx_Thread</STRONG> (Thumb, 264 bytes, Stack size 144 bytes, mail.o(.text))
+<P><STRONG><a name="[52]"></a>UART2_Rx_Thread</STRONG> (Thumb, 294 bytes, Stack size 144 bytes, mail.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = UART2_Rx_Thread &rArr; osMailPut &rArr; osMessagePut &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendChar2
@@ -363,7 +363,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> mail.o(.rodata)
 </UL>
-<P><STRONG><a name="[53]"></a>UART3_Rx_Thread</STRONG> (Thumb, 264 bytes, Stack size 144 bytes, mail.o(.text))
+<P><STRONG><a name="[53]"></a>UART3_Rx_Thread</STRONG> (Thumb, 294 bytes, Stack size 144 bytes, mail.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 184<LI>Call Chain = UART3_Rx_Thread &rArr; osMailPut &rArr; osMessagePut &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendChar3
@@ -374,7 +374,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> mail.o(.rodata)
 </UL>
-<P><STRONG><a name="[54]"></a>Tx_Routing_Thread</STRONG> (Thumb, 200 bytes, Stack size 16 bytes, mail.o(.text))
+<P><STRONG><a name="[54]"></a>Tx_Routing_Thread</STRONG> (Thumb, 224 bytes, Stack size 16 bytes, mail.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = Tx_Routing_Thread &rArr; __osMailGet &rArr; osMailGet &rArr; osMessageGet &rArr; isrMessageGet &rArr; isr_mbx_receive &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__osMailGet
