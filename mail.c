@@ -26,12 +26,25 @@ typedef struct {
 	  uint16_t msgCnt; //mesage count for periodic messages
 } Mail;
 
-
+// Message queue ID's
+osMessageQId Q_UART1;
+osMessageQId Q_UART2;
+osMessageQId Q_UART3;
 
 // Mail Q Id
 osMailQId  mail_queue_id;
 //Setup for Mail Queue 
 osMailQDef(mail_queue, 10, Mail); // Define a mail queue of 10 blocks
+
+// Setup Message Queue 
+osMessageQDef (Q_UART1,0x16,unsigned char);
+osMessageQDef (Q_UART2,0x16,unsigned char);
+osMessageQDef (Q_UART3,0x16,unsigned char);
+
+// Message events
+osEvent UART1_input;
+osEvent UART2_input;
+osEvent UART3_input;
 
 // Mail Q Id
 osMailQId  mail_queue_id;
@@ -204,17 +217,17 @@ void UART1_Rx_Thread (void const *argument)
 	for (;;) 
 	{
     	osSignalWait (0x01,osWaitForever);
-		
-			if (intKey1 == '\r' || intKey1 == '\n') {
+			UART1_input = osMessageGet(Q_UART1, 0);
+			if (UART1_input.value.v == '\r' || UART1_input.value.v == '\n') {
 			SendChar1('\r');
 			SendChar1('\n');
 		} else {
-			SendChar1(intKey1);
+			SendChar1(UART1_input.value.v);
 		}
 		
 		
 				// 2. Check for End of Message (User pressed Enter / Carriage Return)
-		if (intKey1 == '\r' || intKey1 == '\n'){
+		if (UART1_input.value.v == '\r' || UART1_input.value.v == '\n'){
 			local_buffer[index] = '\0'; // we force a Null to terminate the string
 		
 			if (index > 0){ // Only send if the user actually typed something
@@ -289,7 +302,7 @@ void UART1_Rx_Thread (void const *argument)
 		else{
 			// 3. Accumulate normal typing into buffer safely avoiding memory overflow
 			if (index < LOCAL_BUF_SIZE - 1) {
-					local_buffer[index++] = intKey1;
+					local_buffer[index++] = UART1_input.value.v;
 			}
 		}
 	}	
@@ -842,6 +855,10 @@ int main (void)
 	
 	mail_queue_id = osMailCreate(osMailQ(mail_queue), NULL);
 	
+	//create the message queues
+	Q_UART1 = osMessageCreate(osMessageQ(Q_UART1),NULL);					
+	Q_UART2 = osMessageCreate(osMessageQ(Q_UART2),NULL);
+	Q_UART3 = osMessageCreate(osMessageQ(Q_UART3),NULL);
 	
 	T_Routing = osThreadCreate(osThread(Tx_Routing_Thread), NULL);
 	T_Auto_mess1 = osThreadCreate(osThread(Auto_Mess1_Thread), NULL);
@@ -871,7 +888,7 @@ USART1_IRQHandler: This is the IRQ handler for UART #1 input.
 void USART1_IRQHandler (void)
 { 
   intKey1 = (int8_t) (USART1->DR & 0x1FF); 
-
+	osMessagePut(Q_UART1, intKey1, 0);
 	osSignalSet	(T_Text1,0x01);
 	//osMessagePut(UART1,'1', 0);
 	

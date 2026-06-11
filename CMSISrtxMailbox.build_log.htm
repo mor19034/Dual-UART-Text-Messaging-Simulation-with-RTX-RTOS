@@ -41,32 +41,32 @@ C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC\cmsis_
 C:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include\cmsis_armclang.h(46): note: previous definition is here
    46 |   #define __NO_RETURN                            __attribute__((__noreturn__))
       |           ^
-mail.c(684): warning: implicitly declaring library function 'sprintf' with type 'int (char *__restrict, const char *__restrict, ...)' [-Wimplicit-function-declaration]
-  684 |                         sprintf(mail->payload, "\nHearbeat message #%u for uart #%d.\n" , count, UART_num);
+mail.c(697): warning: implicitly declaring library function 'sprintf' with type 'int (char *__restrict, const char *__restrict, ...)' [-Wimplicit-function-declaration]
+  697 |                         sprintf(mail->payload, "\nHearbeat message #%u for uart #%d.\n" , count, UART_num);
       |                         ^
-mail.c(684): note: include the header <stdio.h> or explicitly provide a declaration for 'sprintf'
-mail.c(839): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
-  839 |         SendText1("Welcome, user 1\n \n");
+mail.c(697): note: include the header <stdio.h> or explicitly provide a declaration for 'sprintf'
+mail.c(852): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  852 |         SendText1("Welcome, user 1\n \n");
       |                   ^~~~~~~~~~~~~~~~~~~~~~
-mail.c(121): note: passing argument to parameter 'txt' here
-  121 | void SendText1(uint8_t *txt);
+mail.c(134): note: passing argument to parameter 'txt' here
+  134 | void SendText1(uint8_t *txt);
       |                         ^
-mail.c(840): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
-  840 |         SendText2("Welcome, user 2\n \n");
+mail.c(853): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  853 |         SendText2("Welcome, user 2\n \n");
       |                   ^~~~~~~~~~~~~~~~~~~~~~
-mail.c(122): note: passing argument to parameter 'txt' here
-  122 | void SendText2(uint8_t *txt);
+mail.c(135): note: passing argument to parameter 'txt' here
+  135 | void SendText2(uint8_t *txt);
       |                         ^
-mail.c(841): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
-  841 |         SendText3("Welcome, user 3\n \n");
+mail.c(854): warning: passing 'char[19]' to parameter of type 'uint8_t *' (aka 'unsigned char *') converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+  854 |         SendText3("Welcome, user 3\n \n");
       |                   ^~~~~~~~~~~~~~~~~~~~~~
-mail.c(123): note: passing argument to parameter 'txt' here
-  123 | void SendText3(uint8_t *txt);
+mail.c(136): note: passing argument to parameter 'txt' here
+  136 | void SendText3(uint8_t *txt);
       |                         ^
 6 warnings generated.
 compiling mail.c...
 linking...
-Program Size: Code=12132 RO-data=732 RW-data=56 ZI-data=13712  
+Program Size: Code=12264 RO-data=756 RW-data=56 ZI-data=14072  
 ".\CMSISrtxMailbox.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
