@@ -1,6 +1,6 @@
 Dependencies for Project 'CMSISrtxMailbox', Target 'Target 1': (DO NOT MODIFY !)
 CompilerVersion: 6240000::V6.24::ARMCLANG
-F (.\mail.c)(0x6A2B055C)(-xc -std=c90 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__RTX -gdwarf-4 -O1 -fno-function-sections -fno-data-sections-I./RTE/Device/STM32F103RB-I./RTE/_Target_1-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/MDK-Middleware/7.16.0/Board-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/Device/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/RTE_Driver-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_-o ./mail.o -MMD)
+F (.\mail.c)(0x6A2F16B2)(-xc -std=c90 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__RTX -gdwarf-4 -O1 -fno-function-sections -fno-data-sections-I./RTE/Device/STM32F103RB-I./RTE/_Target_1-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/MDK-Middleware/7.16.0/Board-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/Device/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/RTE_Driver-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_-o ./mail.o -MMD)
 I (C:\Users\pablo\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.2.0\Device\Include\STM32F10x.h)(0x69DF8CC7)
 I (RTE\_Target_1\RTE_Components.h)(0x6A2AFBB3)
 I (C:\Users\pablo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm3.h)(0x69DF8CA4)
@@ -8,12 +8,36 @@ I (C:\Users\pablo\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.2.0\Device\Includ
 I (C:\Users\pablo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\RTOS\RTX\INC\cmsis_os.h)(0x69DF8CA9)
 I (C:\Users\pablo\AppData\Local\Arm\Packs\Keil\MDK-Middleware\7.16.0\Board\Board_LED.h)(0x69DF8B77)
 I (uart.h)(0x6A2AFBB3)
+I (comm_types.h)(0x6A2F165A)
+I (uart_dispatch.h)(0x6A2F165D)
+I (uart_rx_common.h)(0x6A2F1678)
+I (mail_fragment.h)(0x6A2F166B)
 F (.\uart.c)(0x6A2AFBB3)(-xc -std=c90 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__RTX -gdwarf-4 -O1 -fno-function-sections -fno-data-sections-I./RTE/Device/STM32F103RB-I./RTE/_Target_1-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/MDK-Middleware/7.16.0/Board-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/Device/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/RTE_Driver-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_-o ./uart.o -MMD)
 I (C:\Users\pablo\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.2.0\Device\Include\stm32F10x.h)(0x69DF8CC7)
 I (RTE\_Target_1\RTE_Components.h)(0x6A2AFBB3)
 I (C:\Users\pablo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm3.h)(0x69DF8CA4)
 I (C:\Users\pablo\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.2.0\Device\Include\system_stm32f10x.h)(0x69DF8CC7)
 F (.\uart.h)(0x6A2AFBB3)()
+F (.\uart_dispatch.h)(0x6A2F165D)()
+F (.\uart_dispatch.c)(0x6A2F1668)(-xc -std=c90 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__RTX -gdwarf-4 -O1 -fno-function-sections -fno-data-sections-I./RTE/Device/STM32F103RB-I./RTE/_Target_1-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/MDK-Middleware/7.16.0/Board-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/Device/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/RTE_Driver-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_-o ./uart_dispatch.o -MMD)
+I (uart_dispatch.h)(0x6A2F165D)
+I (comm_types.h)(0x6A2F165A)
+I (C:\Users\pablo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\RTOS\RTX\INC\cmsis_os.h)(0x69DF8CA9)
+I (uart.h)(0x6A2AFBB3)
+F (.\uart_rx_common.c)(0x6A2F1685)(-xc -std=c90 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__RTX -gdwarf-4 -O1 -fno-function-sections -fno-data-sections-I./RTE/Device/STM32F103RB-I./RTE/_Target_1-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/MDK-Middleware/7.16.0/Board-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/Device/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/RTE_Driver-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_-o ./uart_rx_common.o -MMD)
+I (uart_rx_common.h)(0x6A2F1678)
+I (comm_types.h)(0x6A2F165A)
+I (C:\Users\pablo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\RTOS\RTX\INC\cmsis_os.h)(0x69DF8CA9)
+I (uart_dispatch.h)(0x6A2F165D)
+I (mail_fragment.h)(0x6A2F166B)
+F (.\uart_rx_common.h)(0x6A2F1678)()
+F (.\mail_fragment.c)(0x6A2F1674)(-xc -std=c90 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__RTX -gdwarf-4 -O1 -fno-function-sections -fno-data-sections-I./RTE/Device/STM32F103RB-I./RTE/_Target_1-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/MDK-Middleware/7.16.0/Board-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/Device/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/RTE_Driver-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_-o ./mail_fragment.o -MMD)
+I (mail_fragment.h)(0x6A2F166B)
+I (comm_types.h)(0x6A2F165A)
+I (C:\Users\pablo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\RTOS\RTX\INC\cmsis_os.h)(0x69DF8CA9)
+I (uart_dispatch.h)(0x6A2F165D)
+F (.\mail_fragment.h)(0x6A2F166B)()
+F (.\comm_types.h)(0x6A2F165A)()
 F (C:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/Boards/Keil/MCBSTM32E/Common/LED_MCBSTM32E.c)(0x69DF8CC7)(-xc -std=c90 --target=arm-arm-none-eabi -mcpu=cortex-m3 -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-D__RTX -gdwarf-4 -O1 -fno-function-sections -fno-data-sections-I./RTE/Device/STM32F103RB-I./RTE/_Target_1-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/Core/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/ARM/CMSIS/5.9.0/CMSIS/RTOS/RTX/INC-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/MDK-Middleware/7.16.0/Board-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/Device/Include-IC:/Users/pablo/AppData/Local/Arm/Packs/Keil/STM32F1xx_DFP/2.2.0/RTE_Driver-D__UVISION_VERSION="543" -DSTM32F10X_MD -D_RTE_-o ./led_mcbstm32e.o -MMD)
 I (C:\Users\pablo\AppData\Local\Arm\Packs\Keil\MDK-Middleware\7.16.0\Board\Board_LED.h)(0x69DF8B77)
 I (C:\Users\pablo\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.2.0\RTE_Driver\GPIO_STM32F10x.h)(0x69DF8CC7)
