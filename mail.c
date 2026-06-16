@@ -944,11 +944,9 @@ void Tx_Routing_Thread (void const *argument)
 				{
 					case Recipient_1:
             // Print out the payload piece (only show the header once, for the first chunk)
-					  if(UART_ContextData[UART_1].Mute_Sender[UART_2] != false){
 					  if (mail->is_fragmented != 2) SendText1(Header_Buffer);
             SendText1((uint8_t *)mail->payload);
 						SendText1((uint8_t *)"\r\n");
-						}
           break;
 					case Recipient_2:
 						if (mail->is_fragmented != 2) SendText2(Header_Buffer);
@@ -1080,7 +1078,8 @@ void Auto_Mess2_Thread (void const *argument)
 			     // Alloc failed: bail out so we never spin forever and starve MailOutput
 					  //break;
 				}
-			mail->Sender = Sender_Auto;			
+			mail->Sender = Sender_Auto;
+			mail->is_fragmented = 0;
 			sprintf(mail->payload, "\nHearbeat message #%u for uart #%d." , count, UART_num);
 			mail->Receiver = output_id;
 			osMailPut(mail_queue_id, mail);
@@ -1155,7 +1154,8 @@ void Auto_Mess1_Thread (void const *argument)
 			     // Alloc failed: bail out so we never spin forever and starve MailOutput
 					  //break;
 				}
-			mail->Sender = Sender_Auto;			
+			mail->Sender = Sender_Auto;
+			mail->is_fragmented = 0;
 			sprintf(mail->payload, "\nAUTO #%u for uart #%d." , count, UART_num);
 			mail->Receiver = output_id;
 			osMailPut(mail_queue_id, mail);
