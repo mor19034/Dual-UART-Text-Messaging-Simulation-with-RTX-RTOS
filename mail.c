@@ -12,62 +12,13 @@
 #include <string.h>
 #include <stdbool.h>
 
+//Created libraries 
+#include "comm_types.h"
+
 //Size message limits for message mail 
-#define MAX_MAIL_PAYLOAD 32
-#define LOCAL_BUF_SIZE 128 // A large temporary buffer to hold input until 'Enter' is pressed
-#define CHUNK_SIZE     (MAX_MAIL_PAYLOAD - 1) // 31 characters + 1 for '\0'
 
 bool mute_Flag;
-
-typedef enum
-{
-	MSG_Emergency = 0,
-	MSG_Standard = 1,
-	MSG_Periodic1 = 2,
-	MSG_Periodic2 = 3
-}message_Type;
-
-typedef enum{
-	UART_1 = 0,
-	UART_2 = 1,
-	UART_3 = 2,
-	NUM_UARTS = 3
-
-}UART_ID;
-
-typedef enum{
-	UART_IDLE = 1,
-	UART_INPUT = 2,
-	UART_MENU = 3
-}UART_STATUS;
-
-
-
-typedef enum {
-	Recipient_1 = UART_1,
-	Recipient_2 = UART_2,
-	Recipient_3 = UART_3,
-	Recipient_Group
-}Recipient_ID;
-
-typedef enum {
-  Sender_1 = UART_1,
-	Sender_2 = UART_2,
-	Sender_3 = UART_3,
-	Sender_Auto
-}Sender_ID;
 	
-
-typedef struct {
-    char payload[MAX_MAIL_PAYLOAD];
-    uint8_t is_fragmented; // 0 = Normal, 1 = first chunk of a fragmented message, 2 = continuation chunk
-    Recipient_ID Receiver; // 1 or 2, so the Tx thread knows where it came from
-	  Sender_ID Sender;    // 1 2 or 3 for intended receiver
-	  uint16_t msgCnt; //mesage count for periodic messages
-} Mail;
-
-	
-
 // Mail Q Id
 osMailQId  mail_queue_id;
 //Setup for Mail Queue 
@@ -90,14 +41,6 @@ uint16_t UART1_seq_count2 = 0;
 uint16_t UART2_seq_count2 = 0;
 uint16_t UART3_seq_count2 = 0;
 
-
-
-typedef struct {
-	UART_STATUS UART_State;
-	Recipient_ID Recipient;
-	bool Mute_Sender[NUM_UARTS];
-	bool Emergency_Mode;
-  }UART_Context;
 
 	
 //Setup and define threads and priority levels
@@ -275,14 +218,14 @@ char local_buffer[LOCAL_BUF_SIZE];
 	UART_ContextData[UART_1].UART_State = UART_IDLE;
 	
 
-	for (;;)
+	for (;;) 
 	{
-
+		
     	osSignalWait (0x01,osWaitForever);
 
 			UART1_Input = osMessageGet(Q_UART1, 0);
 			intKey1 = (uint8_t)UART1_Input.value.v;
-
+		
 		  switch(UART_ContextData[UART_1].UART_State)
 			{
 			  case(UART_IDLE):
@@ -344,7 +287,7 @@ char local_buffer[LOCAL_BUF_SIZE];
 				// --- FRAGMENTATION LOOP ---
 				uint16_t chunk_index = 0;
 				while (remaining_bytes > 0){
-					// Allocate RTX Mail, populate it with data and send it
+					// Allocate RTX Mail, populate it with data and send it 
 					Mail *mail;
 					mail = (Mail*)osMailAlloc(mail_queue_id, osWaitForever);
 					if (mail == NULL){
@@ -373,12 +316,13 @@ char local_buffer[LOCAL_BUF_SIZE];
 								}
 							}
 						}
-						//Fragmentate the message
+						
+						//Fragmentate the message 
 						for (i = 0; i < bytes_to_copy; i++){
 							mail->payload[i] = local_buffer[buffer_ptr + i];
 						}
-
-						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination
+						
+						mail->payload[bytes_to_copy] = '\0'; // Explicitly force null-termination              
 						// Ship it to the Mail Queue
 						osMailPut(mail_queue_id, mail);
 						// Shift tracking pointers forward past the copied bytes
@@ -496,7 +440,8 @@ void UART2_Rx_Thread (void const *argument)
 char local_buffer[LOCAL_BUF_SIZE];
 	uint16_t index = 0;
 	uint16_t i;
-
+  bool cur_Mute_Flag = false;
+	bool prev_Mute_Flag = true;
 		
 	//static UART_STATUS UART3_Status = UART_IDLE;
 	
@@ -507,14 +452,14 @@ char local_buffer[LOCAL_BUF_SIZE];
 	UART_ContextData[UART_2].UART_State = UART_IDLE;
 	
 
-	for (;;)
+	for (;;) 
 	{
-
+		
     	osSignalWait (0x02,osWaitForever);
 
 			UART2_Input = osMessageGet(Q_UART2, 0);
-			intKey2 = (uint8_t)UART2_Input.value.v;
-
+			intKey2 = (uint8_t)UART2_Input.value.v;		
+		
 		  switch(UART_ContextData[UART_2].UART_State)
 			{
 			  case(UART_IDLE):
@@ -546,6 +491,8 @@ char local_buffer[LOCAL_BUF_SIZE];
 						
 				case(UART_INPUT):
 				{
+				 osMutexWait(uart1_mutex, osWaitForever);
+					
 				 if (intKey2 == '\r' || intKey2 == '\n') 
 							{
 			          SendChar2('\r');
@@ -556,7 +503,7 @@ char local_buffer[LOCAL_BUF_SIZE];
 							
 							}
 					
-				// 2. Check for End of Message (User pressed Enter / Carriage Return)
+					// 2. Check for End of Message (User pressed Enter / Carriage Return)
 		  if (intKey2 == '\r' || intKey2 == '\n'){
 			  local_buffer[index] = '\0'; // we force a Null to terminate the string
 		
@@ -636,8 +583,11 @@ char local_buffer[LOCAL_BUF_SIZE];
 					local_buffer[index++] = intKey2;
 			  }	
 	    }
+			
+			osMutexRelease(uart1_mutex);
 				}
 				break;
+		
 				
 				case(UART_MENU):
 				{
@@ -671,10 +621,27 @@ char local_buffer[LOCAL_BUF_SIZE];
 								}
 								case('m'):
 								{
+									
+									if(cur_Mute_Flag == false && prev_Mute_Flag == true){
+									cur_Mute_Flag = true;
+									prev_Mute_Flag = false;
 								  UART_ContextData[UART_2].Mute_Sender[UART_1] = true;
 									UART_ContextData[UART_2].Mute_Sender[UART_3] = true;
 									SendText2("Messages Muted\n");
 									UART_ContextData[UART_2].UART_State = UART_IDLE;
+	                continue;
+									}
+									else if(cur_Mute_Flag == true && prev_Mute_Flag == false)
+									{
+									cur_Mute_Flag = false;
+									prev_Mute_Flag = true;
+									UART_ContextData[UART_2].Mute_Sender[UART_1] = false;
+									UART_ContextData[UART_2].Mute_Sender[UART_3] = false;
+									SendText2("Messages UnMuted\n");
+									UART_ContextData[UART_2].UART_State = UART_IDLE;
+                  continue;
+									}
+									//prev_Mute_Flag = cur_Mute_Flag;
 									break;
 								}
 								case('9'):
@@ -711,7 +678,8 @@ void UART3_Rx_Thread (void const *argument)
 char local_buffer[LOCAL_BUF_SIZE];
 	uint16_t index = 0;
 	uint16_t i;
-
+  bool cur_Mute_Flag = false;
+	bool prev_Mute_Flag = true;
 		
 	//static UART_STATUS UART3_Status = UART_IDLE;
 	
@@ -722,14 +690,14 @@ char local_buffer[LOCAL_BUF_SIZE];
 	UART_ContextData[UART_3].UART_State = UART_IDLE;
 	
 
-	for (;;)
+	for (;;) 
 	{
-
+			uint8_t user_imput;
     	osSignalWait (0x02,osWaitForever);
-
+			
 			UART3_Input = osMessageGet(Q_UART3, 0);
 			intKey3 = (uint8_t)UART3_Input.value.v;
-
+		
 		  switch(UART_ContextData[UART_3].UART_State)
 			{
 			  case(UART_IDLE):
@@ -886,10 +854,27 @@ char local_buffer[LOCAL_BUF_SIZE];
 								}
 								case('m'):
 								{
+									
+									if(cur_Mute_Flag == false && prev_Mute_Flag == true){
+									cur_Mute_Flag = true;
+									prev_Mute_Flag = false;
 								  UART_ContextData[UART_3].Mute_Sender[UART_1] = true;
 									UART_ContextData[UART_3].Mute_Sender[UART_2] = true;
 									SendText3("Messages Muted\n");
+									UART_ContextData[UART_2].UART_State = UART_IDLE;
+	                continue;
+									}
+									else if(cur_Mute_Flag == true && prev_Mute_Flag == false)
+									{
+									cur_Mute_Flag = false;
+									prev_Mute_Flag = true;
+									UART_ContextData[UART_3].Mute_Sender[UART_1] = false;
+									UART_ContextData[UART_3].Mute_Sender[UART_2] = false;
+									SendText3("Messages UnMuted\n");
 									UART_ContextData[UART_3].UART_State = UART_IDLE;
+                  continue;
+									}
+									//prev_Mute_Flag = cur_Mute_Flag;
 									break;
 								}
 								case('9'):
@@ -945,8 +930,10 @@ void Tx_Routing_Thread (void const *argument)
 					case Recipient_1:
             // Print out the payload piece (only show the header once, for the first chunk)
 					  if (mail->is_fragmented != 2) SendText1(Header_Buffer);
+					
             SendText1((uint8_t *)mail->payload);
 						SendText1((uint8_t *)"\r\n");
+					//	}
           break;
 					case Recipient_2:
 						if (mail->is_fragmented != 2) SendText2(Header_Buffer);
@@ -957,7 +944,7 @@ void Tx_Routing_Thread (void const *argument)
 						if (mail->is_fragmented != 2) SendText3(Header_Buffer);
 						SendText3((uint8_t *)mail->payload);
 						SendText3((uint8_t *)"\r\n");
-					break;
+					break;					
            
 					case Recipient_Group:
 						for( index = 0; index < NUM_UARTS; index++){
@@ -980,8 +967,8 @@ void Tx_Routing_Thread (void const *argument)
 									   SendText1(mail->payload);
 										 SendText1("\r\n");
 											 }
-										break;
-
+										break; 
+									 
 									 }
 								   case UART_2:
 									 {
@@ -1078,8 +1065,8 @@ void Auto_Mess2_Thread (void const *argument)
 			     // Alloc failed: bail out so we never spin forever and starve MailOutput
 					  //break;
 				}
-			mail->Sender = Sender_Auto;
-			mail->is_fragmented = 0;
+			mail->Sender = Sender_Auto;	
+			mail->is_fragmented = 0;				
 			sprintf(mail->payload, "\nHearbeat message #%u for uart #%d." , count, UART_num);
 			mail->Receiver = output_id;
 			osMailPut(mail_queue_id, mail);
@@ -1155,7 +1142,7 @@ void Auto_Mess1_Thread (void const *argument)
 					  //break;
 				}
 			mail->Sender = Sender_Auto;
-			mail->is_fragmented = 0;
+			mail->is_fragmented = 0;				
 			sprintf(mail->payload, "\nAUTO #%u for uart #%d." , count, UART_num);
 			mail->Receiver = output_id;
 			osMailPut(mail_queue_id, mail);
@@ -1215,7 +1202,7 @@ int main (void)
 	Q_UART1 = osMessageCreate(osMessageQ(Q_UART1),NULL);					
 	Q_UART2 = osMessageCreate(osMessageQ(Q_UART2),NULL);
 	Q_UART3 = osMessageCreate(osMessageQ(Q_UART3),NULL);
-	
+
 	//create mutex object
   uart1_mutex = osMutexCreate(osMutex(uart1_mutex));
 	uart2_mutex = osMutexCreate(osMutex(uart2_mutex));
@@ -1237,16 +1224,16 @@ int main (void)
 USART1_IRQHandler: This is the IRQ handler for UART #1 input.
 *---------------------------------------------------------------------------*/
 void USART1_IRQHandler (void)
-{
+{ 
   intKey1 = (int8_t) (USART1->DR & 0x1FF);
 	osMessagePut(Q_UART1, intKey1, 0);
 	osSignalSet	(T_Text1,0x01);
-
-}
+	
+} 
 
 
 void USART2_IRQHandler (void) {
-
+ 
     intKey2 = (int8_t) (USART2->DR & 0x1FF);
 		osMessagePut(Q_UART2, intKey2, 0);
 		osSignalSet	(T_Text2,0x02);
