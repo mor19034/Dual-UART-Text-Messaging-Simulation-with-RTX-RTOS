@@ -400,36 +400,6 @@
               <FilePath>.\uart.h</FilePath>
             </File>
             <File>
-              <FileName>uart_dispatch.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\uart_dispatch.h</FilePath>
-            </File>
-            <File>
-              <FileName>uart_dispatch.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\uart_dispatch.c</FilePath>
-            </File>
-            <File>
-              <FileName>uart_rx_common.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\uart_rx_common.c</FilePath>
-            </File>
-            <File>
-              <FileName>uart_rx_common.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\uart_rx_common.h</FilePath>
-            </File>
-            <File>
-              <FileName>mail_fragment.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\mail_fragment.c</FilePath>
-            </File>
-            <File>
-              <FileName>mail_fragment.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\mail_fragment.h</FilePath>
-            </File>
-            <File>
               <FileName>comm_types.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\comm_types.h</FilePath>
