@@ -62,6 +62,11 @@ typedef struct {
 	Recipient_ID Recipient;
 	bool Mute_Sender[NUM_UARTS];
 	bool Emergency_Mode;
+	char local_buffer[LOCAL_BUF_SIZE];
+	uint16_t index;
+	bool cur_Mute_Flag; //for old mute function
+	bool prev_Mute_Flag; //for old mute function
+	bool Mute_Active; // this is for new mute logic
   }UART_Context;
 
 /* Shared global objects - defined in mail.c */

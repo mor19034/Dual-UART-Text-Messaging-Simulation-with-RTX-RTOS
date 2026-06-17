@@ -404,6 +404,36 @@
               <FileType>5</FileType>
               <FilePath>.\comm_types.h</FilePath>
             </File>
+            <File>
+              <FileName>uart_rx_communication.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\uart_rx_communication.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart_rx_communication.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\uart_rx_communication.h</FilePath>
+            </File>
+            <File>
+              <FileName>mail_fragment.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\mail_fragment.c</FilePath>
+            </File>
+            <File>
+              <FileName>mail_fragment.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\mail_fragment.h</FilePath>
+            </File>
+            <File>
+              <FileName>uart_dispatch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\uart_dispatch.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart_dispatch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\uart_dispatch.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
