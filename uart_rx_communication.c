@@ -25,7 +25,7 @@ void UART_Context_Init(UART_ID id)
 }
 
 void UART_Rx_Process(UART_ID id, uint8_t intkey){
-	uint8_t u;
+	uint8_t blocked_UART;
 	char message[32];
 	
 	switch(UART_ContextData[id].UART_State){
@@ -60,17 +60,20 @@ void UART_Rx_Process(UART_ID id, uint8_t intkey){
 			*/
 			case(UART_INPUT):
 				{
+					// Lock this UART's mutex for the entire INPUT processing block
+					osMutexWait(uart_mutex[id], osWaitForever);
+
 					// 1. Check for End of Message (User pressed Enter / Carriage Return)
-					if (intkey == '\r' || intkey == '\n') 
+					if (intkey == '\r' || intkey == '\n')
 						{
 							UART_SendChar(id, '\r');
 							UART_SendChar(id, '\n');
-							
-						/* 2. Once the user hits enter we enter the fragmentation loop*/
-						Fragment_And_Send(id);	
 
-            UART_ContextData[id].UART_State = UART_IDLE; //Go back to IDLE 
-            UART_ContextData[id].index = 0; /* Clear for next message */		
+						/* 2. Once the user hits enter we enter the fragmentation loop*/
+						Fragment_And_Send(id);
+
+            UART_ContextData[id].UART_State = UART_IDLE; //Go back to IDLE
+            UART_ContextData[id].index = 0; /* Clear for next message */
 						}
 						else{
 							UART_SendChar(id, intkey); // echo the character back to the terminal
@@ -80,6 +83,9 @@ void UART_Rx_Process(UART_ID id, uint8_t intkey){
 								UART_ContextData[id].index++;
 							}
 						}
+
+					// Release the mutex after all INPUT processing is done
+					osMutexRelease(uart_mutex[id]);
 				break;
 				}
 				case(UART_MENU): //instead of switch cases we have different if conditions for the menu inputs
@@ -103,11 +109,18 @@ void UART_Rx_Process(UART_ID id, uint8_t intkey){
 							else if (intkey == 'm')
 								{
 									/* Toggle mute on/off for all other UARTs */
+									// Checks if current state is true it changes it to false, and viceversa 
 									UART_ContextData[id].Mute_Active = UART_ContextData[id].Mute_Active ? false : true;
 									
-								for (u = 0; u < NUM_UARTS; u++) {
-									if ((UART_ID)u != id) {
-										UART_ContextData[id].Mute_Sender[u] = UART_ContextData[id].Mute_Active;
+								/*
+									Example: 
+									UART1 pressing mute sets UART_ContextData[UART_1].Mute_Sender[UART_2] = true 
+									and [UART_3] = true. UART1 is telling the routing thread 
+									"don't deliver group messages from others to me"
+								*/
+								for (blocked_UART = 0; blocked_UART < NUM_UARTS; blocked_UART++) {
+									if ((UART_ID)blocked_UART != id) {
+										UART_ContextData[id].Mute_Sender[blocked_UART] = UART_ContextData[id].Mute_Active;
 									}
 								}
 								

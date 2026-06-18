@@ -111,15 +111,13 @@ osEvent  UART2_Input;
 osEvent  UART3_Input;
 
 
-//add mutex capability
-osMutexId uart1_mutex;
+//add mutex capability - control blocks (one per UART)
 osMutexDef(uart1_mutex);
-
-osMutexId uart2_mutex;
 osMutexDef(uart2_mutex);
-
-osMutexId uart3_mutex;
 osMutexDef(uart3_mutex);
+
+// Array of mutex IDs indexed by UART_ID - accessible from uart_rx_communication.c via extern
+osMutexId uart_mutex[NUM_UARTS];
 
 //setup and define message queues
 osMessageQId Q_UART1;         
@@ -519,10 +517,10 @@ int main (void)
 	Q_UART2 = osMessageCreate(osMessageQ(Q_UART2),NULL);
 	Q_UART3 = osMessageCreate(osMessageQ(Q_UART3),NULL);
 
-	//create mutex object
-  uart1_mutex = osMutexCreate(osMutex(uart1_mutex));
-	uart2_mutex = osMutexCreate(osMutex(uart2_mutex));
-	uart3_mutex = osMutexCreate(osMutex(uart3_mutex));
+	//create mutex objects and store in the array for generic access
+	uart_mutex[UART_1] = osMutexCreate(osMutex(uart1_mutex));
+	uart_mutex[UART_2] = osMutexCreate(osMutex(uart2_mutex));
+	uart_mutex[UART_3] = osMutexCreate(osMutex(uart3_mutex));
 	
 	osTimerId timer0 = osTimerCreate(osTimer(timer0_handle), osTimerPeriodic, (void *)0);	
 	osTimerStart(timer0, 58000);

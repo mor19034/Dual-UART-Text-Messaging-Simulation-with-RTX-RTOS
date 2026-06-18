@@ -73,6 +73,9 @@ typedef struct {
 extern osMailQId     mail_queue_id;
 extern UART_Context  UART_ContextData[NUM_UARTS];
 
+/* One mutex per UART - protects the INPUT state echo + fragmentation block */
+extern osMutexId     uart_mutex[NUM_UARTS];
+
 extern osThreadId T_Text1;
 extern osThreadId T_Text2;
 extern osThreadId T_Text3;
